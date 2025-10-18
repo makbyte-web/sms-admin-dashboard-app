@@ -222,9 +222,13 @@ const DashboardUi = ({ children }) => {
                     </li>
                     <li className="dark:text-[--text] text-[--bg] tracking-wide font-thin">
                       Powered by{" "}
-                      <span className="text-indigo-600 font-medium">
+                      <a
+                        href="https://makbyte.io/"
+                        target="blank"
+                        className="text-indigo-600 cursor-pointer font-medium"
+                      >
                         {CompanyName}
-                      </span>
+                      </a>
                     </li>
                   </ul>
                 </nav>
@@ -235,7 +239,7 @@ const DashboardUi = ({ children }) => {
 
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col border-r-2 border-gray-200 dark:border-none">
-          <div className="flex grow flex-col gap-y-5 dark:bg-[--bg] bg-white px-6 pb-4">
+          <div className="flex grow flex-col gap-y-3 dark:bg-[--bg] bg-white px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center gap-2">
               <Logo position={"justify-start"} />
 
@@ -245,7 +249,7 @@ const DashboardUi = ({ children }) => {
             </div>
 
             <nav className="flex flex-1 flex-col">
-              <ul role="list" className="flex flex-1 flex-col gap-y-7">
+              <ul role="list" className="flex flex-1 flex-col gap-y-2">
                 <li>
                   <ul role="list" className="-mx-2 space-y-1">
                     {navigation.map((item, index) => {
@@ -280,7 +284,7 @@ const DashboardUi = ({ children }) => {
                     })}
                   </ul>
                 </li>
-                <li className="mt-auto">
+                <li className="mt-auto ">
                   <Link
                     href="/dashboard/settings"
                     className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 dark:text-gray-400 hover:text-gray-800 hover:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-white"
@@ -294,9 +298,13 @@ const DashboardUi = ({ children }) => {
                 </li>
                 <li className="dark:text-white text-[--bg] tracking-wide font-semibold">
                   Powered by{" "}
-                  <span className="text-indigo-600 font-medium">
+                  <a
+                    href="https://makbyte.io/"
+                    target="blank"
+                    className="text-indigo-600 cursor-pointer font-medium"
+                  >
                     {CompanyName}
-                  </span>
+                  </a>
                 </li>
               </ul>
             </nav>

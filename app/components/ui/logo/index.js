@@ -15,9 +15,13 @@ const Logo = ({ position }) => {
         width={40}
         height={40}
       />
-      <span className="dark:text-[--text] font-semibold text-[--bg] text-lg ml-2">
+      <a
+        href="https://makbyte.io/"
+        target="blank"
+        className="dark:text-[--text] cursor-pointer font-semibold text-[--bg] text-lg ml-2"
+      >
         {CompanyName}
-      </span>
+      </a>
     </div>
   );
 };

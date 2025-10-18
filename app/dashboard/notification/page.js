@@ -372,15 +372,22 @@ const Notification = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center p-6" ref={formRef}>
+    <div
+      className="min-h-screen overflow-hidden flex flex-col items-center p-4 sm:p-6"
+      ref={formRef}
+    >
       <Header currentPage={"Notifications"}></Header>
+
       {academicYear !== "NA" ? (
         <>
           {userType === "superadmin" ? (
-            <p>Notifications can only be sent by School Admin.</p>
+            <p className="text-center text-gray-600 dark:text-gray-300 px-4">
+              Notifications can only be sent by School Admin.
+            </p>
           ) : (
             <>
-              <div className="mt-6 mx-auto w-full max-w-md space-y-6">
+              {/* Form Section */}
+              <div className="mt-6 w-full max-w-2xl space-y-6">
                 {/* Sender Selection */}
                 <div className="group">
                   <label
@@ -657,64 +664,49 @@ const Notification = () => {
                   </div>
                 </div>
 
-                {/* Submit Button */}
                 <div className="pt-4">
                   <button
                     onClick={(event) => handleSave(event)}
                     type="button"
-                    className="w-full inline-flex items-center justify-center rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    className="w-full inline-flex items-center justify-center rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200"
                   >
                     {editable ? "Update Message" : "Save Message"}
                   </button>
                 </div>
               </div>
 
-              {/* List of Notifications */}
-              <div>
+              <div className="w-full max-w-6xl mt-8">
                 {notification && notification.length ? (
                   <div className="mb-10">
-                    <div className="mt-8 flow-root">
-                      <div className="text-center">
-                        <span className="text-2xl font-medium leading-6 text-gray-900 dark:text-gray-200">
-                          Notifications List
-                        </span>
-                      </div>
+                    <div className="text-center mb-6">
+                      <span className="text-xl sm:text-2xl font-medium leading-6 text-gray-900 dark:text-gray-200">
+                        Notifications List
+                      </span>
+                    </div>
 
-                      <div className="-mx-4 mt-2 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                        <div className="inline-block min-w-full py-2 align-middle sm:px-6 px-8">
-                          <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
-                            <table className="min-w-full divide-y">
-                              <thead className="dark:bg-[--bg] bg-[--bgBlue]">
+                    <div className="w-full min-h-screen ">
+                      <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div className="inline-block min-w-full align-middle px-4 sm:px-6 lg:px-8">
+                          <div className="shadow ring-1 ring-black ring-opacity-5 rounded-lg overflow-x-auto">
+                            <table className="min-w-[700px] w-full divide-y divide-gray-300 dark:divide-[--bg]">
+                              <thead className="bg-[--bgBlue] dark:bg-[--bg] sticky top-0 z-10">
                                 <tr>
                                   {tableHeaders.map((header) => (
                                     <th
                                       key={header.key}
                                       scope="col"
-                                      className={`py-3.5 px-3 text-left text-sm font-semibold text-white ${
-                                        header.key === "academicYear"
-                                          ? "pl-4 sm:pl-6"
-                                          : ""
-                                      } ${
-                                        header.key === "createdDate"
-                                          ? "px-3"
-                                          : ""
-                                      }`}
+                                      className="py-3.5 px-3 text-left text-sm font-semibold text-white"
                                     >
-                                      {header.srOnly ? (
-                                        <span className="sr-only">
-                                          {header.label}
-                                        </span>
-                                      ) : (
-                                        header.label
-                                      )}
+                                      {header.label}
                                     </th>
                                   ))}
                                 </tr>
                               </thead>
-                              <tbody className="divide-y dark:divide-gray-800 divide dark:bg-[#353e4b] bg-white">
+
+                              <tbody className="divide-y divide-gray-200 dark:divide-[--bg] bg-white dark:bg-[#353e4b]">
                                 {notification?.map((list, i) => (
                                   <tr key={i}>
-                                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium dark:text-white sm:pl-6">
+                                    <td className="whitespace-nowrap py-4 px-4 text-sm font-medium dark:text-gray-100">
                                       {list?.academicYear}
                                     </td>
                                     <td className="whitespace-nowrap px-3 py-4 text-sm dark:text-gray-200">
@@ -729,7 +721,7 @@ const Notification = () => {
                                     <td className="whitespace-nowrap px-3 py-4 text-sm dark:text-gray-200">
                                       {list?.intendedFor}
                                     </td>
-                                    <td className="whitespace-nowrap px-3 py-4 text-sm dark:text-gray-200">
+                                    <td className="whitespace-nowrap px-3 py-4 text-sm">
                                       <span
                                         className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
                                           list?.status === "Dispatch"
@@ -742,13 +734,14 @@ const Notification = () => {
                                         {list?.status}
                                       </span>
                                     </td>
-
                                     <td className="whitespace-nowrap px-3 py-4 text-sm dark:text-gray-200">
                                       {list?.createdDate}
                                     </td>
-                                    <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm flex gap-2 flex-col font-medium sm:pr-6">
+
+                                    {/* Buttons section */}
+                                    <td className="whitespace-nowrap px-3 py-4 text-sm flex flex-col sm:flex-row gap-2 justify-start sm:justify-end font-medium">
                                       <button
-                                        className="text-indigo-600 hover:dark:text-white"
+                                        className="text-indigo-600 hover:text-indigo-900 dark:hover:text-white"
                                         onClick={() => {
                                           setEditable(true);
                                           handleEdit(list);
@@ -759,13 +752,14 @@ const Notification = () => {
                                       </button>
 
                                       <button
-                                        className="bg-red-600 px-2 py-1 rounded-lg text-white"
+                                        className="bg-red-600 px-2 py-1 rounded-lg text-white hover:bg-red-700"
                                         onClick={() =>
                                           handleDelete(list?.notificationID)
                                         }
                                       >
                                         Delete
                                       </button>
+
                                       <button
                                         className={`px-2 py-1 rounded-lg text-white ${
                                           list?.status === "Dispatch"
@@ -775,11 +769,15 @@ const Notification = () => {
                                         disabled={list?.status === "Dispatch"}
                                         onClick={() =>
                                           list?.status === "Dispatch"
-                                            ? aler(`Notification ${list?.notificationID} is already dispatched`)
+                                            ? alert(
+                                                `Notification ${list?.notificationID} is already dispatched`
+                                              )
                                             : handleSend(list)
                                         }
                                       >
-                                        {list?.status === "Dispatch" ? "Dispatched" : "Send"}
+                                        {list?.status === "Dispatch"
+                                          ? "Dispatched"
+                                          : "Send"}
                                       </button>
                                     </td>
                                   </tr>
@@ -792,16 +790,20 @@ const Notification = () => {
                     </div>
                   </div>
                 ) : (
-                  <></>
+                  <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    No notifications found
+                  </div>
                 )}
               </div>
             </>
           )}
         </>
       ) : (
-        <>
-          <p>Kindly Select and Save the Academic Year from Settings.</p>
-        </>
+        <div className="text-center py-8">
+          <p className="text-gray-600 dark:text-gray-300">
+            Kindly Select and Save the Academic Year from Settings.
+          </p>
+        </div>
       )}
     </div>
   );

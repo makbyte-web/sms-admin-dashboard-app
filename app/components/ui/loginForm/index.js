@@ -34,7 +34,7 @@ export default function LoginForm() {
         <div className="pb-12 mb-8">
           <Link
             href="/"
-            className="flex justify-center rounded-md bg-indigo-500 px-6 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 w-24"
+            className="flex justify-center justify-self-start rounded-md bg-indigo-500 px-6 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 "
           >
             &larr; Back
           </Link>
@@ -94,7 +94,7 @@ export default function LoginForm() {
                 <input
                   id="password"
                   name="password"
-                  type={showPassword ? "text" : "password"} // Toggle between text and password
+                  type={showPassword ? "text" : "password"}
                   onChange={(e) => setInputPassword(e.target.value)}
                   required
                   autoComplete="current-password"
