@@ -13,6 +13,9 @@ export default function AddNewTeacherForm({
   const teacherNameRef = useRef();
   const subjectRef = useRef();
   const emailRef = useRef();
+  const passwordRef = useRef();
+  const sceretQtsRef = useRef();
+  const sceretAnsRef = useRef();
   const qualificationRef = useRef();
 
   const [urlDP, setUrlDP] = useState("NA");
@@ -42,6 +45,9 @@ export default function AddNewTeacherForm({
     teacherName: isEditing?.teacherName || "",
     subject: isEditing?.subject || "",
     email: isEditing?.email || "",
+    password: isEditing?.password || "",
+    sceretQts: isEditing?.sceretQts || "",
+    sceretAns: isEditing?.sceretAns || "",
     qualification: isEditing?.qualification || "",
     urlDP: isEditing?.urlDP || "",
   });
@@ -51,6 +57,9 @@ export default function AddNewTeacherForm({
       teacherName: isEditing?.teacherName || "",
       subject: isEditing?.subject || "",
       email: isEditing?.email || "",
+      password: isEditing?.password || "",
+      sceretQts: isEditing?.sceretQts || "",
+      sceretAns: isEditing?.sceretAns || "",
       qualification: isEditing?.qualification || "",
       urlDP: isEditing?.urlDP || "",
     });
@@ -72,6 +81,9 @@ export default function AddNewTeacherForm({
         teacherNameRef.current.value,
         subjectRef.current.value,
         emailRef.current.value,
+        passwordRef.current.value,
+        sceretQtsRef.current.value,
+        sceretAnsRef.current.value,
         qualificationRef.current.value,
         finalUrlDP,
         new Date().toLocaleDateString("en-IN"),
@@ -86,6 +98,9 @@ export default function AddNewTeacherForm({
         teacherNameRef.current.value,
         subjectRef.current.value,
         emailRef.current.value,
+        passwordRef.current.value,
+        sceretQtsRef.current.value,
+        sceretAnsRef.current.value,
         qualificationRef.current.value,
         isEditing?.urlDP,
         isEditing?.createdDate,
@@ -103,10 +118,12 @@ export default function AddNewTeacherForm({
       teacherName: teacherNameRef.current.value,
       subject: subjectRef.current.value,
       email: emailRef.current.value,
+      password: passwordRef.current.value,
+      sceretQts: sceretQtsRef.current.value,
+      sceretAns: sceretAnsRef.current.value,
       qualification: qualificationRef.current.value,
     });
     fetchTeachers();
-    console.log("working at Teacher addition");
   };
 
   return (
@@ -140,7 +157,7 @@ export default function AddNewTeacherForm({
                   id="name"
                   name="name"
                   type="text"
-                  defaultValue={teacherFormData.teacherName}
+                  defaultValue={teacherFormData?.teacherName}
                   placeholder="e.g John Doe"
                   required
                   ref={teacherNameRef}
@@ -161,7 +178,7 @@ export default function AddNewTeacherForm({
                 <input
                   id="subject"
                   name="subject"
-                  defaultValue={teacherFormData.subject}
+                  defaultValue={teacherFormData?.subject}
                   type="text"
                   placeholder="e.g Mathematics"
                   required
@@ -183,7 +200,7 @@ export default function AddNewTeacherForm({
                 <input
                   id="qualification"
                   name="qualification"
-                  defaultValue={teacherFormData.qualification}
+                  defaultValue={teacherFormData?.qualification}
                   type="text"
                   placeholder="e.g Primary"
                   required
@@ -202,7 +219,7 @@ export default function AddNewTeacherForm({
               <div className="mt-2">
                 <input
                   id="email"
-                  defaultValue={teacherFormData.email}
+                  defaultValue={teacherFormData?.email}
                   name="email"
                   type="email"
                   placeholder="e.g teacher@gmail.com"
@@ -210,6 +227,81 @@ export default function AddNewTeacherForm({
                   ref={emailRef}
                   autoComplete="email"
                   className="block w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 px-4"
+                />
+              </div>
+            </div>
+                        <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100"
+              >
+                Password
+              </label>
+              {title === "Edit" ? (
+                <div className="mt-2">
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    defaultValue={teacherFormData?.password}
+                    placeholder="e.g xxxxxxxx"
+                    disabled
+                    ref={passwordRef}
+                    className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 px-4"
+                  />
+                </div>
+              ) : (
+                <div className="mt-2">
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    defaultValue={teacherFormData?.password}
+                    placeholder="e.g xxxxxxxx"
+                    required
+                    ref={passwordRef}
+                    className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 px-4"
+                  />
+                </div>
+              )}
+            </div>
+            <div>
+              <label
+                htmlFor="secretQts"
+                className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100"
+              >
+                Secret Question
+              </label>
+              <div className="mt-2">
+                <input
+                  id="secretQts"
+                  name="secretQts"
+                  type="text"
+                  defaultValue={teacherFormData?.sceretQts}
+                  placeholder="e.g Your pet's name?"
+                  required
+                  ref={sceretQtsRef}
+                  className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 px-4"
+                />
+              </div>
+            </div>
+            <div>
+              <label
+                htmlFor="secretAns"
+                className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100"
+              >
+                Secret Answer
+              </label>
+              <div className="mt-2">
+                <input
+                  id="secretAns"
+                  name="secretAns"
+                  type="text"
+                  defaultValue={teacherFormData?.sceretAns}
+                  placeholder="e.g Coco"
+                  required
+                  ref={sceretAnsRef}
+                  className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 px-4"
                 />
               </div>
             </div>

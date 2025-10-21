@@ -4,10 +4,13 @@ import { collection, doc, addDoc, getDocs, getDoc, updateDoc, deleteDoc, query, 
 export class Teachers {
   static collectionName = "teachers";
 
-  constructor(teacherName, subject, email, qualification, urlDP, createdDate, createdBy, updatedDate, updatedBy, schoolID='new', teacherID='new') {
+  constructor(teacherName, subject, email, password,sceretQts ,sceretAns, qualification, urlDP, createdDate, createdBy, updatedDate, updatedBy, schoolID='new', teacherID='new') {
     this.teacherName = teacherName;
     this.subject = subject;
     this.email = email;
+    this.password = password;
+    this.sceretQts = sceretQts;
+    this.sceretAns = sceretAns;
     this.qualification = qualification;
     this.urlDP = urlDP;
     this.createdDate = createdDate;
@@ -25,6 +28,9 @@ export class Teachers {
         teacherName: this.teacherName,
         subject: this.subject,
         email: this.email,
+        password: this.password,
+        sceretQts: this.sceretQts,
+        sceretAns: this.sceretAns,
         qualification: this.qualification,
         urlDP: this.urlDP,
         createdDate: this.createdDate,
@@ -33,7 +39,7 @@ export class Teachers {
         updatedBy: this.updatedBy
       };
       const docRef = await addDoc(collection(db, Teachers.collectionName.toString()), { ...newData });
-      //console.log("Teachers added with ID:", docRef?.id);
+      // console.log("Teachers added with ID:", docRef?.id);
       return true;
     } catch (error) {
       console.log("Error in addNewTeacher:", error);
@@ -48,6 +54,9 @@ export class Teachers {
         teacherName: this.teacherName,
         subject: this.subject,
         email: this.email,
+        password: this.password,
+        sceretQts: this.sceretQts,
+        sceretAns: this.sceretAns,
         qualification: this.qualification,
         urlDP: this.urlDP,
         createdDate: this.createdDate,

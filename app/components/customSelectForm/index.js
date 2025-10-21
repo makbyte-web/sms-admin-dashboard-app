@@ -151,7 +151,7 @@ const CustomSelectForm = ({
           await new Promise((resolve) => setTimeout(resolve, 50));
         }
 
-        console.log("Using fees data:", currentFeesData); // Debug log
+        // console.log("Using fees data:", currentFeesData); // Debug log
 
         const filteredByStudents = students
           ?.filter((student) =>
@@ -218,22 +218,6 @@ const CustomSelectForm = ({
     }
   };
 
-  // const fetchFeesMappingList = async () => {
-  //   try {
-  //     const data = [];
-  //     const queryRes = query(
-  //       collection(db, "feesMapping"),
-  //       where("schoolID", "==", schoolID)
-  //     );
-  //     const querySnapshot = await getDocs(queryRes);
-  //     querySnapshot.forEach((doc) => {
-  //       data.push({ feesMapID: doc.id, ...doc.data() });
-  //     });
-  //     return data;
-  //   } catch (error) {
-  //     console.log("Error in getFeesMappingBySchool:", error);
-  //   }
-  // };
   const fetchSchoolDivisionsList = async () => {
     let result;
     if (userType === "superadmin") {
@@ -489,7 +473,7 @@ const CustomSelectForm = ({
                   type="submit"
                   className="px-5 lg:px-2 lg:py-3 py-3 text-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
-                  View Attendance
+                  {title === "Students Fees Table" ? "View Assigned Fees" : "View Attendance"} 
                 </button>
               </div>
             </div>
