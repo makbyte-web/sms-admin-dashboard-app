@@ -8,6 +8,7 @@ import { Notifications } from "@/firestore/documents/notification";
 import { Students } from "@/firestore/documents/student";
 import { ParentStudents } from "@/firestore/documents/parentStudents";
 import { ParentFCMToken } from "@/firestore/documents/parentFCMToken";
+import { parseDate } from "@/lib/utils"
 
 const Notification = () => {
   const senderOptions = [
@@ -88,6 +89,12 @@ const Notification = () => {
       if (userType === "superadmin" || userType === "schooladmin") {
         const result = await Notifications.getNotificationsBySchool(schoolID);
 
+        result && result?.sort((a, b) => {
+          const dateA = parseDate(a.createdDate);
+          const dateB = parseDate(b.createdDate);
+          return dateB - dateA; // descending order
+        });
+        
         if (result) setNotification(result);
       }
     }

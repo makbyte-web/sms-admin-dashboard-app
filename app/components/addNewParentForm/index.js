@@ -136,7 +136,6 @@ export default function AddNewParentForm({
       contact: contactRef.current.value,
     });
     fetchParents();
-    console.log("working in parent");
   };
 
   return (
