@@ -1,9 +1,10 @@
 import { db } from "@/lib/firebase";
 import { collection, doc, addDoc, getDocs, getDoc, updateDoc, deleteDoc, query, where } from "firebase/firestore";
 import { Users } from "./users";
-import { standards, divisions } from "@/defaults";
+import { standards, divisions, subjects } from "@/defaults";
 import { Standards } from "./standard";
 import { Divisions } from "./division";
+import { Subjects } from "./subject";
 export class Schools {
   static collectionName = "schools";
 
@@ -104,6 +105,23 @@ export class Schools {
         retval = await newDefaultDiv.addDivision();
         // console.log(`Standard ${divisions[division]} add for school ${addedSchoolID}`)
         newDefaultDiv = null;
+      });
+      retval=null
+
+      //adding default subjects
+      let newDefaultSub;
+      subjects.forEach(async (subject) => {
+        newDefaultSub = new Subjects(
+          addedSchoolID,
+          subject,
+          new Date().toLocaleDateString("en-IN"),
+          loggedInUserID,
+          "NA",
+          "NA"
+        );
+        retval = await newDefaultSub.addSubject();
+        // console.log(`Subject ${subject} added for school ${addedSchoolID}`)
+        newDefaultSub = null;
       });
       retval=null
 

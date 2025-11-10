@@ -29,6 +29,7 @@ export const ThemeProvider = ({ children }) => {
   const [teachers, setTeachers] = useState([]);
   const [students, setStudents] = useState([]);
   const [schools, setSchools] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
     setParentsFilteredData(parents);
@@ -87,7 +88,7 @@ export const ThemeProvider = ({ children }) => {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
   const handleFileChange = async (e, name, id, folder) => {
-    const file = e.target.files[0];
+    const file = await e.target.files[0];
 
     if (!file) {
       console.log("No file selected");
@@ -156,6 +157,8 @@ export const ThemeProvider = ({ children }) => {
         loggedInUserID,
         setLoggedInUserID,
         handleFileChange,
+        selectedFile,
+        setSelectedFile,
       }}
     >
       {children}

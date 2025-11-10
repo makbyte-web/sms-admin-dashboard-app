@@ -53,6 +53,7 @@ export default function StudentList({
 
   const [deleteItems, setDeleteItems] = useState([]);
   const [isBulkDelete, setIsBulkDelete] = useState(false);
+  
   useEffect(() => {
     if (typeof window !== "undefined") {
       const loggedInUserID = JSON.parse(localStorage.getItem("userID")) || "NA";
@@ -210,6 +211,12 @@ export default function StudentList({
                     </th>
                     <th
                       scope="col"
+                      className="dark:text-[--text] px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
+                      Gr. No.
+                    </th>
+                    <th
+                      scope="col"
                       className="min-w-[12rem] py-3.5 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-[--text]"
                     >
                       Name
@@ -225,12 +232,6 @@ export default function StudentList({
                       className="dark:text-[--text] px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
                       Email
-                    </th>
-                    <th
-                      scope="col"
-                      className="dark:text-[--text] px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    >
-                      Gr. No.
                     </th>
                     <th
                       scope="col"
@@ -274,6 +275,9 @@ export default function StudentList({
                               }
                             />
                           </td>
+                          <td className="whitespace-nowrap dark:text-[--textSoft] px-3 py-4 text-sm text-gray-500">
+                            {person?.grNo}
+                          </td>
                           <td
                             className={classNames(
                               "whitespace-nowrap py-4 pr-3 text-sm font-medium dark:text-[--text]",
@@ -302,9 +306,7 @@ export default function StudentList({
                           <td className="whitespace-nowrap dark:text-[--textSoft] px-3 py-4 text-sm text-gray-500">
                             {person?.email}
                           </td>
-                          <td className="whitespace-nowrap dark:text-[--textSoft] px-3 py-4 text-sm text-gray-500">
-                            {person?.grNo}
-                          </td>
+
 
                           <td className="whitespace-nowrap dark:text-[--textSoft] py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
                             <button

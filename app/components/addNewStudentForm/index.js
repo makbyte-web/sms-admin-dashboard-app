@@ -7,19 +7,9 @@ import { useUserContext } from "@/context/UserContext";
 import { Standards } from "@/firestore/documents/standard";
 import { Divisions } from "@/firestore/documents/division";
 import QRCode from "qrcode";
+import { defaultUrlDP } from "@/defaults";
 
 export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
-  const nameRef = useRef();
-  const stdRef = useRef();
-  const divRef = useRef();
-  const emailRef = useRef();
-  const grNoRef = useRef();
-
-  const [urlDP, setUrlDP] = useState("NA");
-  const [academicYear, setAcademicYear] = useState("");
-
-  const { user } = useUserContext();
-
   const {
     isEditing,
     isAddModalOpen,
@@ -29,7 +19,30 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
     setSchoolID,
     handleFileChange,
     title,
+    selectedFile,
+    setSelectedFile,
   } = useTheme();
+  const nameRef = useRef();
+  const stdRef = useRef();
+  const divRef = useRef();
+  const emailRef = useRef();
+  const grNoRef = useRef();
+  const [schoolFormData, setSchoolFormData] = useState({
+    name: isEditing?.studentName || "",
+    stdRef: isEditing?.stdID || "",
+    divRef: isEditing?.divID || "",
+    email: isEditing?.email || "",
+    grno: isEditing?.grNo || "",
+    urlDP: isEditing?.urlDP || "",
+    urlQR: isEditing?.urlQR || "",
+  });
+
+  const [urlDP, setUrlDP] = useState(
+    schoolFormData?.urlDP ? schoolFormData?.urlDP : defaultUrlDP
+  );
+  const [academicYear, setAcademicYear] = useState("");
+
+  const { user } = useUserContext();
 
   let retval;
 
@@ -38,7 +51,8 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const schoolID = JSON.parse(localStorage.getItem("schoolID")) || "NA";
-      const academicYear = JSON.parse(localStorage.getItem("academicYear")) || "NA";
+      const academicYear =
+        JSON.parse(localStorage.getItem("academicYear")) || "NA";
       setSchoolID(schoolID);
       setAcademicYear(academicYear);
     }
@@ -72,16 +86,6 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
     fetchStdDiv();
   }, [schoolID]);
 
-  const [schoolFormData, setSchoolFormData] = useState({
-    name: isEditing?.studentName || "",
-    stdRef: isEditing?.stdID || "",
-    divRef: isEditing?.divID || "",
-    email: isEditing?.email || "",
-    grno: isEditing?.grNo || "",
-    urlDP: isEditing?.urlDP || "",
-    urlQR: isEditing?.urlQR || "",
-  });
-
   useEffect(() => {
     setSchoolFormData({
       name: isEditing?.studentName || "",
@@ -96,7 +100,7 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
 
   const handleFormSubmit = async () => {
     let studentReturnID = "";
-    const finalUrlDP = urlDP !== undefined ? urlDP : "No URL";
+    const finalUrlDP = urlDP !== undefined ? urlDP : defaultUrlDP;
 
     if (title === "Add") {
       const newStudent = new Students(
@@ -108,7 +112,7 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
         grNoRef.current.value,
         academicYear,
         finalUrlDP,
-        "",
+        "NA",
         new Date().toLocaleDateString("en-IN"),
         loggedInUserID,
         "NA",
@@ -120,7 +124,7 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
         schoolID: schoolID,
         studentName: nameRef.current.value,
         studentID: studentReturnID,
-        academicYear: academicYear
+        academicYear: academicYear,
       });
 
       if (finalUrlQR) {
@@ -153,13 +157,14 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
         emailRef.current.value,
         grNoRef.current.value,
         academicYear,
-        isEditing.urlDP,
-        isEditing.urlQR,
-        isEditing.createdDate,
-        isEditing.createdBy,
+        // isEditing?.urlDP,
+        finalUrlDP,
+        isEditing?.urlQR,
+        isEditing?.createdDate,
+        isEditing?.createdBy,
         new Date().toLocaleDateString("en-IN"),
         loggedInUserID,
-        isEditing.studentID
+        isEditing?.studentID
       );
       studentReturnID = await existsingStudent.updateStudent();
       // if (retval) alert(`Student updated with ID:${studentReturnID}`);
@@ -393,50 +398,51 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
             )}
 
             <div className="mt-2">
-              {title === "Edit" ? (
-                <>
-                  {isEditing?.urlDP ? (
-                    <img src={isEditing?.urlDP} width="150px" />
-                  ) : (
-                    <input
-                      required
-                      id="photo"
-                      name="student-profile"
-                      type="file"
-                      accept="image/*"
-                      onChange={async (e) =>
-                        setUrlDP(
-                          await handleFileChange(
-                            e,
-                            "student-profile",
-                            `std-${grNoRef.current.value}-dp`,
-                            schoolID
-                          )
-                        )
-                      }
-                      className="block w-full cursor-pointer rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 px-4 text-gray-900 dark:text-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500"
-                    />
-                  )}
-                </>
-              ) : (
-                <input
-                  required
-                  id="photo"
-                  name="student-profile"
-                  type="file"
-                  accept="image/*"
-                  onChange={async (e) =>
-                    setUrlDP(
-                      await handleFileChange(
-                        e,
-                        "student-profile",
-                        `std-${grNoRef.current.value}-dp`,
-                        schoolID
-                      )
-                    )
-                  }
-                  className="block w-full cursor-pointer rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 px-4 text-gray-900 dark:text-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500"
+              <input
+                id="photo"
+                name="student-profile"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (!file) return;
+
+                  setSelectedFile(file); // store file
+                  setUrlDP(URL.createObjectURL(file)); // preview
+                }}
+                className="block w-full cursor-pointer rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 px-4 text-gray-900 dark:text-gray-200 shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500"
+              />
+
+              {(urlDP || isEditing?.urlDP) && (
+                <img
+                  src={urlDP ? urlDP : isEditing?.urlDP}
+                  width="150"
+                  className="mt-2 rounded-md shadow"
                 />
+              )}
+
+              {selectedFile && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const uploadedUrl = await handleFileChange(
+                      { target: { files: [selectedFile] } },
+                      "student-profile",
+                      title === "Edit"
+                        ? `std-${grNoRef.current.value}-dp-edit`
+                        : `std-${grNoRef.current.value}-dp-add`,
+                      schoolID
+                    );
+
+                    if (uploadedUrl) {
+                      setUrlDP(uploadedUrl);
+                      setSelectedFile(null);
+                    }
+                  }}
+                  className="mt-3 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-indigo-500 transition disabled:opacity-50"
+                >
+                  Upload Photo
+                </button>
               )}
             </div>
           </div>

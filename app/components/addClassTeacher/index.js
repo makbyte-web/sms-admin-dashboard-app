@@ -2,13 +2,15 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useTheme } from "@/context/themeContext";
 import AddModal from "../ui/addModal";
-// import { Students } from "@/firestore/documents/student";
 import { useUserContext } from "@/context/UserContext";
 import { Teachers } from "@/firestore/documents/teacher";
 import { Standards } from "@/firestore/documents/standard";
 import { Divisions } from "@/firestore/documents/division";
 import { ClassTeacher } from "@/firestore/documents/classTeacher";
+import { roles } from "@/defaults";
+import { Subjects } from "@/firestore/documents/subject";
 
+// After addition of subjects to app this form will be used as subject / class teacher assignment
 export default function AddClassTeacher({
   handleModalClose,
   title,
@@ -18,8 +20,11 @@ export default function AddClassTeacher({
   const teacherIDRef = useRef();
   const stdIDRef = useRef();
   const divIDRef = useRef();
-
+  const subIDRef = useRef();
+  const roleRef = useRef();
+  
   const { user } = useUserContext();
+
   const {
     isEditing,
     isAddModalOpen,
@@ -45,11 +50,13 @@ export default function AddClassTeacher({
       setUserType(userType);
     }
   }, []);
+
   const loggedInUserID = user?.uid ? user?.uid : "NA";
 
   const [teachers, setTeachers] = useState([]);
   const [standard, setStandard] = useState();
   const [division, setDivision] = useState();
+  const [subjects, setSubjects] = useState();
 
   useEffect(() => {
     async function fetchTeachers() {
@@ -59,9 +66,7 @@ export default function AddClassTeacher({
       } else if (userType === "schooladmin") {
         result = await Teachers.getTeachersCreatedByUser(loggedInUserID);
       }
-      result.sort((group1, group2) =>
-        group1.teacherName.localeCompare(group2.teacherName)
-      );
+      if (Array.isArray(result)) result.sort((group1, group2) => group1.teacherName.localeCompare(group2.teacherName));
       if (result) setTeachers(result);
     }
     fetchTeachers();
@@ -71,12 +76,21 @@ export default function AddClassTeacher({
     async function fetchStdDiv() {
       const result1 = await Standards.getStandardsBySchool(schoolID);
       const result2 = await Divisions.getDivisionsBySchool(schoolID);
-      result1.sort((std1, std2) => std1.stdName.localeCompare(std2.stdName));
-      result2.sort((div1, div2) => div1.divName.localeCompare(div2.divName));
+      if (Array.isArray(result1)) result1.sort((std1, std2) => std1.stdName.localeCompare(std2.stdName));
+      if (Array.isArray(result2)) result2.sort((div1, div2) => div1.divName.localeCompare(div2.divName));
       if (result1) setStandard(result1);
       if (result2) setDivision(result2);
     }
     fetchStdDiv();
+  }, []);
+
+  useEffect(() => {
+    async function fetchSubjects() {
+      const result = await Subjects.getSubjectsBySchool(schoolID);
+      if (Array.isArray(result)) result.sort((sub1, sub2) => sub1.subName.localeCompare(sub2.subName));
+      if (result) setSubjects(result);
+    }
+    fetchSubjects();
   }, []);
 
   const [classTeacherData, setClassTeacherData] = useState({
@@ -103,6 +117,8 @@ export default function AddClassTeacher({
         teacherIDRef.current.value,
         stdIDRef.current.value,
         divIDRef.current.value,
+        subIDRef.current.value,
+        roleRef.current.value,
         new Date().toLocaleDateString("en-IN"),
         loggedInUserID,
         "NA",
@@ -117,6 +133,8 @@ export default function AddClassTeacher({
         teacherIDRef.current.value,
         stdIDRef.current.value,
         divIDRef.current.value,
+        subIDRef.current.value,
+        roleRef.current.value,
         isEditing.createdDate,
         isEditing.createdBy,
         new Date().toLocaleDateString("en-IN"),
@@ -132,6 +150,8 @@ export default function AddClassTeacher({
       teacherID: teacherIDRef.current.value,
       stdID: stdIDRef.current.value,
       divID: divIDRef.current.value,
+      subID: subIDRef.current.value,
+      role: roleRef.current.value
     });
     fetchClassTeacher();
   };
@@ -142,8 +162,8 @@ export default function AddClassTeacher({
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="text-center text-2xl font-bold leading-9 tracking-wide text-gray-900 dark:text-[--text] capitalize">
             {title === "Edit Class Teacher"
-              ? "Edit Class Teacher Details"
-              : "Add Class Teacher Details"}
+              ? "Edit Roles & Subject"
+              : "Add Roles & Subject"}
           </h2>
         </div>
 
@@ -215,6 +235,51 @@ export default function AddClassTeacher({
                       return (
                         <option key={item?.teacherID} value={item?.teacherID}>
                           {item?.teacherName}
+                        </option>
+                      );
+                    })}
+              </select>
+            </div>
+            {/* roles dropdown  */}
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium leading-6 dark:text-[--text] text-gray-900"
+              >
+                Role
+              </label>
+              <select
+                id="teacherID"
+                name="teacherID"
+                className="block w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 px-4"
+                ref={roleRef}
+                required
+              >
+                <option value="Select">Select Role</option>
+                {title === "Edit Class Teacher"
+                  ? roles &&
+                    roles?.length &&
+                    roles?.map((item, i) => {
+                      return (
+                        <option
+                          key={`role${i}`}
+                          value={item}
+                          selected={
+                            isEditing.role === item
+                              ? true
+                              : false
+                          }
+                        >
+                          {item}
+                        </option>
+                      );
+                    })
+                  : roles &&
+                    roles?.length &&
+                    roles?.map((item,idx) => {
+                      return (
+                        <option key={`role${idx}`} value={item}>
+                          {item}
                         </option>
                       );
                     })}
@@ -314,14 +379,59 @@ export default function AddClassTeacher({
                 </select>
               </div>
             </div>
+            {/* subID dropdown */}
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium leading-6 dark:text-[--text] text-gray-900"
+              >
+                Subject
+              </label>
+              <select
+                id="teacherID"
+                name="teacherID"
+                className="block w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 px-4"
+                ref={subIDRef}
+                required
+              >
+                <option value="Select">Select Subject</option>
+                {title === "Edit Class Teacher"
+                  ? subjects &&
+                    subjects?.length &&
+                    subjects?.map((item, i) => {
+                      return (
+                        <option
+                          key={item?.subID}
+                          value={item?.subID}
+                          selected={
+                            isEditing.subID === item?.subID
+                              ? true
+                              : false
+                          }
+                        >
+                          {item?.subName}
+                        </option>
+                      );
+                    })
+                  : subjects &&
+                    subjects?.length &&
+                    subjects?.map((item) => {
+                      return (
+                        <option key={item?.subID} value={item?.subID}>
+                          {item?.subName}
+                        </option>
+                      );
+                    })}
+              </select>
+            </div>
             <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
               <button
                 type="submit"
                 className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 sm:col-start-2"
               >
                 {title === "Edit Class Teacher"
-                  ? "Edit Class Teacher"
-                  : "Add Class Teacher"}
+                  ? "Edit"
+                  : "Add"}
               </button>
               <button
                 type="button"

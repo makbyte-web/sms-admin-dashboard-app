@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import AddModal from "../ui/addModal";
 import { Parents } from "@/firestore/documents/parent";
 import { useUserContext } from "@/context/UserContext";
+import { defaultUrlDP } from "@/defaults";
 
 export default function AddNewParentForm({
   handleModalClose,
@@ -20,8 +21,6 @@ export default function AddNewParentForm({
   const addressRef = useRef();
   const contactRef = useRef();
 
-  const [urlDP, setUrlDP] = useState("NA");
-
   const {
     isEditing,
     handleAddModalClose,
@@ -30,6 +29,8 @@ export default function AddNewParentForm({
     schoolID,
     setSchoolID,
     handleFileChange,
+    selectedFile,
+    setSelectedFile,
   } = useTheme();
   const { user } = useUserContext();
 
@@ -55,6 +56,9 @@ export default function AddNewParentForm({
     contact: isEditing?.contact || "",
     urlDP: isEditing?.urlDP || "",
   });
+  const [urlDP, setUrlDP] = useState(
+    parentFormData?.urlDP ? parentFormData?.urlDP : defaultUrlDP
+  );
 
   useEffect(() => {
     setParentFormData({
@@ -80,7 +84,7 @@ export default function AddNewParentForm({
   // };
 
   const handleFormSubmit = async () => {
-    const finalUrlDP = urlDP !== undefined ? urlDP : "No URL";
+    const finalUrlDP = urlDP !== undefined ? urlDP : defaultUrlDP;
 
     if (title === "Add") {
       const newParent = new Parents(
@@ -112,7 +116,7 @@ export default function AddNewParentForm({
         parseInt(noOfChildrenRef.current.value),
         addressRef.current.value,
         contactRef.current.value,
-        isEditing?.urlDP,
+        finalUrlDP,
         isEditing?.createdDate,
         isEditing?.createdBy,
         new Date().toLocaleDateString("en-IN"),
@@ -379,39 +383,71 @@ export default function AddNewParentForm({
               >
                 Upload Photo
               </label>
+
               <div className="mt-2">
-                {title === "Edit" ? (
-                  <>
-                    <img src={isEditing?.urlDP} width="150px" />
-                  </>
-                ) : (
-                  <input
-                    id="image"
-                    required
-                    name="parent-profile"
-                    type="file"
-                    accept="image/*"
-                    onChange={async (e) =>
-                      setUrlDP(
-                        await handleFileChange(
-                          e,
-                          "parent-profile",
-                          `par-${contactRef.current.value}-dp`,
-                          schoolID
-                        )
-                      )
-                    }
-                    className="block w-full cursor-pointer rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 px-4 text-gray-900 dark:text-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500"
+                <input
+                  id="image"
+                  name="parent-profile"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    setSelectedFile(file);
+                    setUrlDP(URL.createObjectURL(file));
+                  }}
+                  className="block w-full cursor-pointer rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 px-4 text-gray-900 dark:text-gray-200 shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500"
+                />
+
+                {(urlDP || isEditing?.urlDP) && (
+                  <img
+                    src={urlDP ? urlDP : isEditing?.urlDP}
+                    width="150"
+                    className="mt-2 rounded-md shadow"
                   />
+                )}
+
+                {selectedFile && (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const uploadedUrl = await handleFileChange(
+                        { target: { files: [selectedFile] } },
+                        "parent-profile",
+                        title === "Edit"
+                          ? `par-${contactRef.current.value}-dp-edit`
+                          : `par-${contactRef.current.value}-dp`,
+                        schoolID
+                      );
+
+                      if (uploadedUrl) {
+                        setUrlDP(uploadedUrl);
+                        setSelectedFile(null);
+                      }
+                    }}
+                    className="mt-3 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-indigo-500 transition disabled:opacity-50"
+                  >
+                    Upload Photo
+                  </button>
                 )}
               </div>
             </div>
-            <button
-              type="submit"
-              className="w-full rounded-md bg-indigo-600 py-2 text-white shadow-sm ring-1 ring-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-600 sm:text-sm dark:bg-indigo-500 dark:ring-indigo-500 dark:hover:bg-indigo-600"
-            >
-              {title === "Edit" ? "Save Changes" : "Add Parent"}
-            </button>
+            <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+              <button
+                type="submit"
+                className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+              >
+                {title === "Edit" ? "Save Changes" : "Add Parent"}
+              </button>
+              <button
+                onClick={handleModalClose}
+                type="button"
+                data-autofocus
+                className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
+              >
+                Cancel
+              </button>
+            </div>
           </form>
         </div>
       </div>

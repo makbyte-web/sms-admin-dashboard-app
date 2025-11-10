@@ -1,28 +1,28 @@
 export const CompanyName = "MAK {Byte}";
 
-export const standards = Object.freeze({ 
-    kg: "KG",
-    jrkg: "JR KG",
-    srkg: "SR KG",
-    first: "I",
-    second: "II",
-    third: "III",
-    fourth: "IV",
-    fifth: "V",
-    sixth: "VI",
-    seventh: "VII",
-    eight: "VIII",
-    nineth: "IX",
-    tenth: "X"
-  });
+export const standards = Object.freeze({
+  kg: "KG",
+  jrkg: "JR KG",
+  srkg: "SR KG",
+  first: "I",
+  second: "II",
+  third: "III",
+  fourth: "IV",
+  fifth: "V",
+  sixth: "VI",
+  seventh: "VII",
+  eight: "VIII",
+  nineth: "IX",
+  tenth: "X",
+});
 
-export const divisions = Object.freeze({ 
-    sec1: "A",
-    sec2: "B",
-    sec3: "C",
-    sec4: "D",
-    sec5: "E"
-  });
+export const divisions = Object.freeze({
+  sec1: "A",
+  sec2: "B",
+  sec3: "C",
+  sec4: "D",
+  sec5: "E",
+});
 
 export const daysOfWeek = Object.freeze([
   "Sunday",
@@ -32,7 +32,7 @@ export const daysOfWeek = Object.freeze([
   "Thursday",
   "Friday",
   "Saturday",
-  "Duration"
+  "Duration",
 ]);
 
 export const holidaysType = Object.freeze([
@@ -42,7 +42,7 @@ export const holidaysType = Object.freeze([
   "Ceremony",
   "Vacation",
   "Break",
-  "Others"
+  "Others",
 ]);
 
 export const academicYears = Object.freeze([
@@ -61,5 +61,51 @@ export const academicYears = Object.freeze([
   "2037-38",
   "2038-39",
   "2039-40",
-  "2040-41"
+  "2040-41",
+]);
+
+export const defaultUrlDP =
+  "https://res.cloudinary.com/duka3quea/image/upload/v1761906887/profilePlaceholderDP.jpg";
+
+export const sampleFileURL = Object.freeze({
+  parents: [
+    "https://res.cloudinary.com/duka3quea/raw/upload/v1762067259/parents.xlsx",
+    "https://res.cloudinary.com/duka3quea/raw/upload/v1762067258/parents.csv",
+  ],
+  teachers: [
+    "https://res.cloudinary.com/duka3quea/raw/upload/v1762700936/teachers.xlsx",
+    "https://res.cloudinary.com/duka3quea/raw/upload/v1762700911/teachers.csv",
+  ],
+  students: [
+    "https://res.cloudinary.com/duka3quea/raw/upload/v1762067259/students.xlsx",
+    "https://res.cloudinary.com/duka3quea/raw/upload/v1762067258/students.csv",
+  ],
+  schools: ["#", "#"],
+});
+
+export const subjects = Object.freeze([
+  "English",
+  "Hindi",
+  "Marathi",
+  "Maths",
+  "EVS1",
+  "EVS2",
+  "History",
+  "Geography",
+  "Arts",
+  "Drawing",
+  "Computer",
+  "PE",
+  "VEdu",
+]);
+
+export const roles = Object.freeze([
+  "Principal",
+  "Vice Principal",
+  "Head Master",
+  "Head Mistress",
+  "Class Teacher",
+  "Teacher",
+  "Probation",
+  "Traniee",
 ]);

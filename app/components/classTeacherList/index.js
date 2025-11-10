@@ -6,7 +6,7 @@ import { ClassTeacher } from "@/firestore/documents/classTeacher";
 import { Teachers } from "@/firestore/documents/teacher";
 import { Standards } from "@/firestore/documents/standard";
 import { Divisions } from "@/firestore/documents/division";
-
+import { Subjects } from "@/firestore/documents/subject";
 import Link from "next/link";
 import { useTheme } from "@/context/themeContext";
 import Modal from "../ui/modal";
@@ -30,7 +30,9 @@ const ClassTeacherList = () => {
     handleModalOpen,
     setSchoolID,
   } = useTheme();
+
   const loggedInUserID = user?.uid ? user?.uid : "NA";
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const schoolID = JSON.parse(localStorage.getItem("schoolID")) || "NA";
@@ -43,7 +45,7 @@ const ClassTeacherList = () => {
   }, []);
 
   const fetchClassTeacher = async () => {
-    let result, classTeacherResult, teachersResult, stdResult, divResult;
+    let result, classTeacherResult, teachersResult, stdResult, divResult, subResult;
     if (userType === "superadmin") {
       classTeacherResult = await ClassTeacher.getClassTeachersBySchool(
         schoolID
@@ -59,6 +61,7 @@ const ClassTeacherList = () => {
       teachersResult = await Teachers.getTeachersBySchool(schoolID);
       stdResult = await Standards.getStandardsBySchool(schoolID);
       divResult = await Divisions.getDivisionsBySchool(schoolID);
+      subResult = await Subjects.getSubjectsBySchool(schoolID);
       const teacherMap = teachersResult.reduce((acc, teacher) => {
         acc[teacher.teacherID] = teacher.teacherName;
         return acc;
@@ -71,6 +74,10 @@ const ClassTeacherList = () => {
         acc[div.divID] = div.divName;
         return acc;
       }, {});
+      const subjectMap = subResult.reduce((acc, sub) => {
+        acc[sub.subID] = sub.subName;
+        return acc;
+      }, {});
       const classTeacherWithNameStdDiv = classTeacherResult.map(
         (classTeacher) => {
           return {
@@ -78,16 +85,16 @@ const ClassTeacherList = () => {
             teacherName: teacherMap[classTeacher.teacherID],
             stdName: standardMap[classTeacher.stdID],
             divName: divisionMap[classTeacher.divID],
+            subName: subjectMap[classTeacher.subID]
           };
         }
       );
       result = classTeacherWithNameStdDiv;
     }
-    result.sort((data1, data2) =>
-      data1.teacherName.localeCompare(data2.teacherName)
-    );
+    if (Array.isArray(result)) result.sort((data1, data2) => data1.teacherName.localeCompare(data2.teacherName));
     if (result) setClassTeacherData(result);
   };
+  
   useEffect(() => {
     fetchClassTeacher();
   }, [userType, schoolID, loggedInUserID]);
@@ -131,13 +138,13 @@ const ClassTeacherList = () => {
           type="button"
           className="bg-indigo-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 transition justify-end"
         >
-          Add Class Teacher
+          Assign Role & Subject to Teacher
         </button>
       </div>
       <div className="mt-8 flow-root">
         <div className="text-center">
           <span className="text-2xl font-medium leading-6 text-gray-900 dark:text-gray-200">
-            Class Teachers List
+            Role & Subject Assignment List
           </span>
         </div>
 
@@ -157,6 +164,12 @@ const ClassTeacherList = () => {
                       scope="col"
                       className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-6"
                     >
+                      Role
+                    </th>
+                    <th
+                      scope="col"
+                      className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-6"
+                    >
                       Teacher Name
                     </th>
                     <th
@@ -164,6 +177,12 @@ const ClassTeacherList = () => {
                       className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-6"
                     >
                       Class
+                    </th>
+                    <th
+                      scope="col"
+                      className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-6"
+                    >
+                      Subject
                     </th>
                     <th
                       scope="col"
@@ -192,10 +211,16 @@ const ClassTeacherList = () => {
                         {list?.academicYear}
                       </td>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium dark:text-white sm:pl-6">
+                        {list?.role}
+                      </td>
+                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium dark:text-white sm:pl-6">
                         {list?.teacherName}
                       </td>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium dark:text-white sm:pl-6">
                         {list?.stdName} {list?.divName}
+                      </td>
+                        <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium dark:text-white sm:pl-6">
+                        {list?.subName}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm dark:text-gray-200">
                         {list?.createdDate}

@@ -46,7 +46,7 @@ const StudentSingleProfile = ({ studentData }) => {
           </div>
           <div>
             <Image
-              src={studentData?.imgSrc ? studentData?.imgSrc : NoAvatar}
+              src={studentData?.urlDP ? studentData?.urlDP : NoAvatar}
               alt="No Avatar"
               className="rounded-xl"
               height={150}

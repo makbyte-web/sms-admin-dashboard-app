@@ -17,6 +17,7 @@ const SchoolSingleProfile = ({ schoolData }) => {
     schoolID,
     setSchoolID,
   } = useTheme();
+  
   useEffect(() => {
     if (typeof window !== "undefined") {
       const userType = JSON.parse(localStorage.getItem("userType")) || "NA";
@@ -52,8 +53,12 @@ const SchoolSingleProfile = ({ schoolData }) => {
       label: "Division",
       route: `/dashboard/schools/${schoolID}/division`,
     },
+     {
+      label: "Subject",
+      route: `/dashboard/schools/${schoolID}/subject`,
+    },
     {
-      label: "Class Teacher",
+      label: "Role & Subject",
       route: `/dashboard/schools/${schoolID}/classTeacher`,
     },
     {
@@ -104,7 +109,7 @@ const SchoolSingleProfile = ({ schoolData }) => {
           <div>
             <Image
               src={schoolData?.urlDP ? schoolData?.urlDP : NoAvatar}
-              alt={schoolData?.urlDP ? schoolData?.schoolName : "No Avatar"}
+              alt={schoolData?.urlDP ? schoolData?.schoolName : "School"}
               className="rounded-xl"
               height={150}
               width={150}

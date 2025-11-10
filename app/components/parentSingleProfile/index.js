@@ -88,7 +88,7 @@ const ParentSingleProfile = ({ parentData }) => {
 
           <div>
             <Image
-              src={parentData.imgSrc ? parentData.imgSrc : NoAvatar}
+              src={parentData?.urlDP ? parentData?.urlDP : NoAvatar}
               alt="No Avatar"
               className="rounded-xl"
               height={150}

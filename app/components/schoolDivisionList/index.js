@@ -47,18 +47,12 @@ const SchoolDivisionList = () => {
     } else {
       result = "You are not authorized to see Schools Standards List data";
     }
-    result.sort((div1, div2) => div1.divName.localeCompare(div2.divName));
+    if (Array.isArray(result)) result.sort((div1, div2) => div1.divName.localeCompare(div2.divName));
     if (result) setDivisionListData(result);
   };
   useEffect(() => {
     fetchSchoolDivisionsList();
   }, [loggedInUserID, schoolID, userType]);
-
-  // Handle edit functionality
-  // const handleEdit = (divID) => {
-  //   const divisionToEdit = divisionListData.find((div) => div.divID === divID);
-  //   console.log("Editing division:", divisionToEdit);
-  // };
 
   // Handle delete functionality
   const handleDelete = (divID) => {

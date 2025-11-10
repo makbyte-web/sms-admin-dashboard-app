@@ -16,7 +16,6 @@ export default function SingleParentProfile() {
         setParentData({
           ...result,
           parentID: params?.id || result?.parentID,
-          imgSrc: result?.urlDP || NoAvatar,
           type: "parent"
         });
       }

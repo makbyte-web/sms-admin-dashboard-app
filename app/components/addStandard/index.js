@@ -194,8 +194,8 @@ const AddStandard = ({ handleModalClose, title, fetchSchoolStandardList }) => {
                     className="block text-lg font-semibold leading-6 text-gray-900 dark:text-indigo-400"
                   >
                     Add Default Standard :{" "}
-                    <span className="text-sm font-medium text-gray-900 dark:text-gray-200">
-                      {stdList.join(",")}
+                    <span className="wrap text-sm font-medium text-gray-900 dark:text-gray-200">
+                      {stdList.join(", ")}
                     </span>
                   </label>
                   {/* Radio Button - Section */}
