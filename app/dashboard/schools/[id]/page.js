@@ -14,7 +14,6 @@ const SingleSchoolProfile = () => {
         setSchoolData({
           ...result,
           type: "school",
-          imgSrc: result.imgSrc || Avatar,
         });
       }
     }

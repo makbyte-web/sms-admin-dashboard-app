@@ -69,9 +69,7 @@ export default function AcademicHolidayList() {
     } else {
       result = "You are not authorized to view Schools Academic Holiday data";
     }
-    await result?.sort((day1, day2) =>
-      day1?.occasion.localeCompare(day2?.occasion)
-    );
+    if (Array.isArray(result))  result?.sort((day1, day2) => day1?.occasion.localeCompare(day2?.occasion));
     if (result) setHolidayListData(result);
   };
   useEffect(() => {

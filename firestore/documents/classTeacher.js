@@ -4,12 +4,14 @@ import { collection, doc, addDoc, getDocs, getDoc, updateDoc, deleteDoc, query, 
 export class ClassTeacher {
   static collectionName = "classTeacher";
 
-  constructor(schoolID, academicYear, teacherID, stdID, divID, createdDate, createdBy, updatedDate, updatedBy, ctID='new') {
+  constructor(schoolID, academicYear, teacherID, stdID, divID, subID, role, createdDate, createdBy, updatedDate, updatedBy, ctID='new') {
     this.schoolID = schoolID;
     this.academicYear = academicYear;
     this.teacherID = teacherID;
     this.stdID = stdID;
     this.divID = divID;
+    this.subID = subID;
+    this.role = role;
     this.createdDate = createdDate;
     this.createdBy = createdBy;
     this.updatedDate = updatedDate;
@@ -25,6 +27,8 @@ export class ClassTeacher {
         teacherID : this.teacherID,
         stdID: this.stdID,
         divID: this.divID,
+        subID: this.subID,
+        role: this.role,
         createdDate: this.createdDate,
         createdBy: this.createdBy,
         updatedDate: this.updatedDate,
@@ -47,6 +51,8 @@ export class ClassTeacher {
         teacherID : this.teacherID,
         stdID: this.stdID,
         divID: this.divID,
+        subID: this.subID,
+        role: this.role,
         createdDate: this.createdDate,
         createdBy: this.createdBy,
         updatedDate: this.updatedDate,

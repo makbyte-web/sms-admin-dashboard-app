@@ -3,17 +3,15 @@ import { useTheme } from "@/context/themeContext";
 import React, { useEffect, useRef, useState } from "react";
 import AddModal from "../ui/addModal";
 import { useUserContext } from "@/context/UserContext";
-import { Divisions } from "@/firestore/documents/division";
-import { divisions } from "@/defaults";
+import { Subjects } from "@/firestore/documents/subject";
+import { subjects } from "@/defaults";
 
-const AddDivision = ({ handleModalClose, title, fetchSchoolDivisionsList }) => {
-  const divList = [];
-  Object.keys(divisions).forEach((division) =>
-    divList.push(divisions[division])
-  );
-
-  const divNameRef = useRef();
-
+const AddSubject = ({ handleModalClose, title, fetchSchoolSubjectList }) => {
+  const subNameRef = useRef();
+  
+  const [defaultSub, setDefaultSub] = useState();
+  const [subCount, setSubCount] = useState(0);
+  
   const {
     isEditing,
     handleAddModalOpen,
@@ -24,102 +22,101 @@ const AddDivision = ({ handleModalClose, title, fetchSchoolDivisionsList }) => {
     schoolID,
     setSchoolID,
   } = useTheme();
-  const { user } = useUserContext();
-
+  
   let retval;
-
+  const { user } = useUserContext();
   const loggedInUserID = user?.uid ? user?.uid : "NA";
+  
   useEffect(() => {
     if (typeof window !== "undefined") {
       const schoolID = JSON.parse(localStorage.getItem("schoolID")) || "NA";
       const schoolName = JSON.parse(localStorage.getItem("schoolName")) || "NA";
-      setSchoolID(schoolID);
       setSchoolName(schoolName);
+      setSchoolID(schoolID);
     }
   }, []);
 
-  const [defaultDivVal, setDefaultDivVal] = useState();
-  const [divCount, setDivCount] = useState(0);
 
-  const [divisionFormData, setDivisionFormData] = useState({
-    divID: isEditing?.divID || "",
+  const [subjectFormData, setSubjectFormData] = useState({
+    subID: isEditing?.subID || "",
     schoolID: isEditing?.schoolID || "",
-    divName: isEditing?.divName || "",
+    subName: isEditing?.subName || "",
   });
 
   useEffect(() => {
-    async function fetchDivCount() {
-      const result = await Divisions.getDivisionCountForSchool(schoolID);
-      if (result) setDivCount(result);
-      if (result === 0) setDefaultDivVal("yes");
+    async function fetchSubCount() {
+      const result = await Subjects.getSubjectCountForSchool(schoolID);
+      if (result) setSubCount(result);
+      if (result === 0) setDefaultSub("yes");
     }
-    fetchDivCount();
-  }, []);
+    fetchSubCount();
+  }, [schoolID]);
 
   useEffect(() => {
-    setDivisionFormData({
-      divID: isEditing?.divID || "",
+    setSubjectFormData({
+      subID: isEditing?.subID || "",
       schoolID: isEditing?.schoolID || "",
-      divName: isEditing?.divName || "",
+      subName: isEditing?.subName || "",
     });
   }, [isEditing]);
 
-  const handleDivisionSelection = (event) => {
+  const handleSubjectSelection = (event) => {
     const optionSelected = event.target.value;
-    const DivisionField = document.getElementById("DivisionField");
+    const SubjectField = document.getElementById("SubjectField");
     if (optionSelected === "no") {
-      DivisionField.style.display = "block";
+      SubjectField.style.display = "block";
     } else {
-      DivisionField.style.display = "none";
+      SubjectField.style.display = "none";
     }
-    setDefaultDivVal(optionSelected);
+    setDefaultSub(optionSelected);
   };
 
   const handleFormSubmit = async () => {
-    if (defaultDivVal === "yes") {
-      let newDefaultDiv;
-      Object.keys(divisions).forEach(async (division) => {
-        newDefaultDiv = new Divisions(
+    if (defaultSub === "yes") {
+      let newDefaultSubs;
+      subjects.forEach(async (subject) => {
+        newDefaultSubs = new Subjects(
           schoolID,
-          divisions[division],
+          subject,
           new Date().toLocaleDateString("en-IN"),
           loggedInUserID,
           "NA",
           "NA"
         );
-        retval = await newDefaultDiv.addDivision();
-        newDefaultDiv = null;
+        retval = await newDefaultSubs.addSubject();
+        newDefaultSubs = null;
       });
     } else {
-      if (title === "Add Division") {
-        const newDivision = new Divisions(
+      if (title === "Add Subject") {
+        const newSubject = new Subjects(
           schoolID,
-          divNameRef.current.value,
+          subNameRef.current.value,
           new Date().toLocaleDateString("en-IN"),
           loggedInUserID,
           "NA",
           "NA"
         );
-        retval = await newDivision.addDivision();
-      } else if (title === "Edit Division") {
-        const existingDivision = new Divisions(
+        retval = await newSubject.addSubject();
+      } else if (title === "Edit Subject") {
+        const existingSubject = new Subjects(
           schoolID,
-          divNameRef.current.value,
+          subNameRef.current.value,
           isEditing.createdDate,
           isEditing.createdBy,
           new Date().toLocaleDateString("en-IN"),
           loggedInUserID,
-          isEditing.divID
+          isEditing.subID
         );
-        retval = await existingDivision.updateDivision();
+        retval = await existingSubject.updateSubject();
       }
     }
 
-    setDivisionFormData({
-      divName: divNameRef.current.value || "",
+    setSubjectFormData({
+      subName: subNameRef.current.value || "",
     });
+
     handleModalClose();
-    fetchSchoolDivisionsList();
+    fetchSchoolSubjectList();
   };
 
   return (
@@ -127,20 +124,18 @@ const AddDivision = ({ handleModalClose, title, fetchSchoolDivisionsList }) => {
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 lg:px-8 max-sm:px-0">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="text-center text-2xl font-bold leading-9 tracking-wide text-gray-900 dark:text-gray-100 capitalize">
-            {title === "Edit Division"
-              ? "Edit Division Details"
-              : "Add Division Details"}
+            {title === "Edit Standard"
+              ? "Edit Standard Details"
+              : "Add Standard Details"}
           </h2>
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form
-            action="#"
             onSubmit={(e) => {
               e.preventDefault();
               handleAddModalOpen();
             }}
-            method="POST"
             className="space-y-6"
           >
             {/* School ID Field */}
@@ -157,7 +152,6 @@ const AddDivision = ({ handleModalClose, title, fetchSchoolDivisionsList }) => {
                   name="schoolID"
                   type="text"
                   defaultValue={schoolID}
-                  placeholder="e.g x32xx"
                   required
                   disabled
                   className="block w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 px-4"
@@ -179,7 +173,6 @@ const AddDivision = ({ handleModalClose, title, fetchSchoolDivisionsList }) => {
                   name="schoolName"
                   defaultValue={schoolName}
                   type="text"
-                  placeholder="e.g Banegar English High School"
                   required
                   disabled
                   className="block w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 px-4"
@@ -187,17 +180,17 @@ const AddDivision = ({ handleModalClose, title, fetchSchoolDivisionsList }) => {
               </div>
             </div>
 
+            {/* Default Standard Field */}
             <div className="mb-6">
-              {divCount <= 0 ? (
+              {subCount <= 0 ? (
                 <>
-                  {/* Default Division Field */}
                   <label
-                    htmlFor="defaultDiv"
+                    htmlFor="defaultSub"
                     className="block text-lg font-semibold leading-6 text-gray-900 dark:text-indigo-400"
                   >
-                    Add Default Division :{" "}
+                    Add Default Subject :{" "}
                     <span className="wrap text-sm font-medium text-gray-900 dark:text-gray-200">
-                      {divList.join(", ")}
+                      {subjects.join(", ")}
                     </span>
                   </label>
                   {/* Radio Button - Section */}
@@ -205,10 +198,10 @@ const AddDivision = ({ handleModalClose, title, fetchSchoolDivisionsList }) => {
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="radio"
-                        name="defaultDiv"
+                        name="defaultSub"
                         value="yes"
                         defaultChecked
-                        onChange={handleDivisionSelection}
+                        onChange={handleSubjectSelection}
                         className="text-indigo-600 focus:ring-indigo-600 h-4 w-4 border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-full"
                       />
                       <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600">
@@ -218,9 +211,9 @@ const AddDivision = ({ handleModalClose, title, fetchSchoolDivisionsList }) => {
                     <label className="inline-flex items-center cursor-pointer">
                       <input
                         type="radio"
-                        name="defaultDiv"
+                        name="defaultSub"
                         value="no"
-                        onChange={handleDivisionSelection}
+                        onChange={handleSubjectSelection}
                         className="text-indigo-600 focus:ring-indigo-600 h-4 w-4 border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-full"
                       />
                       <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-indigo-600">
@@ -232,24 +225,24 @@ const AddDivision = ({ handleModalClose, title, fetchSchoolDivisionsList }) => {
               ) : (
                 <>
                   <div
-                    id="DivisionField"
-                    className={divCount <= 0 ? "hidden" : "visible"}
+                    id="SubjectField"
+                    className={subCount <= 0 ? "hidden" : "visible"}
                   >
                     <label
-                      htmlFor="Division"
+                      htmlFor="Subject"
                       className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100"
                     >
-                      Division
+                      Subject
                     </label>
                     <div className="mt-2">
                       <input
-                        id="divName"
-                        defaultValue={divisionFormData?.divName}
-                        name="divName"
+                        id="subName"
+                        name="subName"
+                        defaultValue={subjectFormData.subName}
                         type="text"
-                        placeholder="e.g A, B, C, D .... "
-                        ref={divNameRef}
+                        ref={subNameRef}
                         className="block w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 px-4"
+                        placeholder="e.g English, Hindi, Marathi ...."
                       />
                     </div>
                   </div>
@@ -258,23 +251,23 @@ const AddDivision = ({ handleModalClose, title, fetchSchoolDivisionsList }) => {
               {/* end of div mb-6 */}
             </div>
 
-            {/* Division Field */}
-            <div id="DivisionField" className="hidden">
+            {/* Subject Field */}
+            <div id="SubjectField" className="hidden">
               <label
-                htmlFor="Division"
+                htmlFor="Subject"
                 className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100"
               >
-                Division
+                Subject
               </label>
               <div className="mt-2">
                 <input
-                  id="divName"
-                  defaultValue={divisionFormData?.divName}
-                  name="divName"
+                  id="subName"
+                  name="subName"
+                  defaultValue={subjectFormData.subName}
                   type="text"
-                  placeholder="e.g A, B, C, D .... "
-                  ref={divNameRef}
+                  ref={subNameRef}
                   className="block w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 px-4"
+                  placeholder="e.g English, Hindi, Marathi ...."
                 />
               </div>
             </div>
@@ -285,7 +278,7 @@ const AddDivision = ({ handleModalClose, title, fetchSchoolDivisionsList }) => {
                 type="submit"
                 className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 sm:col-start-2"
               >
-                {title === "Edit Division" ? "Edit" : "Add"}
+                {title === "Edit Subject" ? "Edit" : "Add"}
               </button>
               <button
                 type="button"
@@ -299,6 +292,7 @@ const AddDivision = ({ handleModalClose, title, fetchSchoolDivisionsList }) => {
         </div>
       </div>
 
+      {/* Confirmation Modal */}
       {isAddModalOpen && (
         <AddModal
           open={isAddModalOpen}
@@ -311,4 +305,4 @@ const AddDivision = ({ handleModalClose, title, fetchSchoolDivisionsList }) => {
   );
 };
 
-export default AddDivision;
+export default AddSubject;

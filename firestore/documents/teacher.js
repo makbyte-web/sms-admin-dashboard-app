@@ -4,9 +4,8 @@ import { collection, doc, addDoc, getDocs, getDoc, updateDoc, deleteDoc, query, 
 export class Teachers {
   static collectionName = "teachers";
 
-  constructor(teacherName, subject, email, password,sceretQts ,sceretAns, qualification, urlDP, createdDate, createdBy, updatedDate, updatedBy, schoolID='new', teacherID='new') {
+  constructor(teacherName, email, password, sceretQts, sceretAns, qualification, urlDP, createdDate, createdBy, updatedDate, updatedBy, schoolID='new', teacherID='new') {
     this.teacherName = teacherName;
-    this.subject = subject;
     this.email = email;
     this.password = password;
     this.sceretQts = sceretQts;
@@ -18,7 +17,7 @@ export class Teachers {
     this.updatedDate = updatedDate;
     this.updatedBy = updatedBy;
     this.schoolID = schoolID;
-    this.teacherID = teacherID
+    this.teacherID = teacherID;
   }
 
   addTeacher = async () => {
@@ -26,7 +25,6 @@ export class Teachers {
       const newData = {
         schoolID: this.schoolID,
         teacherName: this.teacherName,
-        subject: this.subject,
         email: this.email,
         password: this.password,
         sceretQts: this.sceretQts,
@@ -52,7 +50,6 @@ export class Teachers {
       const newData = {
         schoolID: this.schoolID,
         teacherName: this.teacherName,
-        subject: this.subject,
         email: this.email,
         password: this.password,
         sceretQts: this.sceretQts,

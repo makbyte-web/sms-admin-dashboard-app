@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import AddModal from "../ui/addModal";
 import { Teachers } from "@/firestore/documents/teacher";
 import { useUserContext } from "@/context/UserContext";
+import { defaultUrlDP } from "@/defaults";
 
 export default function AddNewTeacherForm({
   handleModalClose,
@@ -11,14 +12,11 @@ export default function AddNewTeacherForm({
   fetchTeachers,
 }) {
   const teacherNameRef = useRef();
-  const subjectRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
   const sceretQtsRef = useRef();
   const sceretAnsRef = useRef();
   const qualificationRef = useRef();
-
-  const [urlDP, setUrlDP] = useState("NA");
 
   const {
     isEditing,
@@ -28,6 +26,8 @@ export default function AddNewTeacherForm({
     schoolID,
     setSchoolID,
     handleFileChange,
+    selectedFile,
+    setSelectedFile,
   } = useTheme();
   const { user } = useUserContext();
 
@@ -43,7 +43,6 @@ export default function AddNewTeacherForm({
 
   const [teacherFormData, setTeacherFormData] = useState({
     teacherName: isEditing?.teacherName || "",
-    subject: isEditing?.subject || "",
     email: isEditing?.email || "",
     password: isEditing?.password || "",
     sceretQts: isEditing?.sceretQts || "",
@@ -52,10 +51,14 @@ export default function AddNewTeacherForm({
     urlDP: isEditing?.urlDP || "",
   });
 
+  const [urlDP, setUrlDP] = useState(
+    teacherFormData?.urlDP ? teacherFormData?.urlDP : defaultUrlDP
+  );
+  console.log("url Dp :", urlDP);
+
   useEffect(() => {
     setTeacherFormData({
       teacherName: isEditing?.teacherName || "",
-      subject: isEditing?.subject || "",
       email: isEditing?.email || "",
       password: isEditing?.password || "",
       sceretQts: isEditing?.sceretQts || "",
@@ -63,8 +66,9 @@ export default function AddNewTeacherForm({
       qualification: isEditing?.qualification || "",
       urlDP: isEditing?.urlDP || "",
     });
+    setUrlDP(isEditing?.urlDP || defaultUrlDP);
+    setSelectedFile(null);
   }, [isEditing]);
-
   // const handleFileChange = (event) => {
   //   const file = event.target.files[0];
   //   setTeacherFormData((prevData) => ({
@@ -74,12 +78,11 @@ export default function AddNewTeacherForm({
   // };
 
   const handleFormSubmit = async () => {
-    const finalUrlDP = urlDP !== undefined ? urlDP : "No URL";
+    const finalUrlDP = urlDP !== undefined ? urlDP : defaultUrlDP;
 
     if (title === "Add") {
       const newTeacher = new Teachers(
         teacherNameRef.current.value,
-        subjectRef.current.value,
         emailRef.current.value,
         passwordRef.current.value,
         sceretQtsRef.current.value,
@@ -94,15 +97,14 @@ export default function AddNewTeacherForm({
       );
       retval = await newTeacher.addTeacher();
     } else if (title === "Edit") {
-      const existsingTeacher = new Teachers(
+      const existingTeacher = new Teachers(
         teacherNameRef.current.value,
-        subjectRef.current.value,
         emailRef.current.value,
         passwordRef.current.value,
         sceretQtsRef.current.value,
         sceretAnsRef.current.value,
         qualificationRef.current.value,
-        isEditing?.urlDP,
+        finalUrlDP,
         isEditing?.createdDate,
         isEditing?.createdBy,
         new Date().toLocaleDateString("en-IN"),
@@ -110,13 +112,13 @@ export default function AddNewTeacherForm({
         isEditing?.schoolID,
         isEditing?.teacherID
       );
-      retval = await existsingTeacher.updateTeacher();
+
+      retval = await existingTeacher.updateTeacher();
     }
 
     handleModalClose();
     setTeacherFormData({
       teacherName: teacherNameRef.current.value,
-      subject: subjectRef.current.value,
       email: emailRef.current.value,
       password: passwordRef.current.value,
       sceretQts: sceretQtsRef.current.value,
@@ -168,29 +170,7 @@ export default function AddNewTeacherForm({
             <div>
               <div className="flex items-center justify-between">
                 <label
-                  htmlFor="subject"
-                  className="block text-sm font-medium leading-6 dark:text-[--text] text-gray-900"
-                >
-                  Subject
-                </label>
-              </div>
-              <div className="mt-2">
-                <input
-                  id="subject"
-                  name="subject"
-                  defaultValue={teacherFormData?.subject}
-                  type="text"
-                  placeholder="e.g Mathematics"
-                  required
-                  ref={subjectRef}
-                  className="block w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 px-4"
-                />
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="subject"
+                  htmlFor="qualification"
                   className="block text-sm font-medium leading-6 dark:text-[--text] text-gray-900"
                 >
                   Qualification
@@ -230,7 +210,7 @@ export default function AddNewTeacherForm({
                 />
               </div>
             </div>
-                        <div>
+            <div>
               <label
                 htmlFor="password"
                 className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100"
@@ -312,30 +292,51 @@ export default function AddNewTeacherForm({
               >
                 Upload Photo
               </label>
+
               <div className="mt-2">
-                {title === "Edit" ? (
-                  <>
-                    <img src={isEditing?.urlDP} width="150px" />
-                  </>
-                ) : (
-                  <input
-                    id="photo"
-                    required
-                    name="teacher-profile"
-                    type="file"
-                    accept="image/*"
-                    onChange={async (e) =>
-                      setUrlDP(
-                        await handleFileChange(
-                          e,
-                          "teacher-profile",
-                          `ter-${emailRef.current.value}-dp`,
-                          schoolID
-                        )
-                      )
-                    }
-                    className="block w-full cursor-pointer rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 px-4 text-gray-900 dark:text-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500"
+                <input
+                  id="photo"
+                  name="teacher-profile"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    setSelectedFile(file);
+                    setUrlDP(URL.createObjectURL(file));
+                  }}
+                  className="block w-full cursor-pointer rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 px-4 text-gray-900 dark:text-gray-200 shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500"
+                />
+
+                {(urlDP || isEditing?.urlDP) && (
+                  <img
+                    src={urlDP ? urlDP : isEditing?.urlDP}
+                    width="150"
+                    className="mt-2 rounded-md shadow"
                   />
+                )}
+
+                {selectedFile && (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const uploadedUrl = await handleFileChange(
+                        { target: { files: [selectedFile] } },
+                        "teacher-profile",
+                        title === "Edit"
+                          ? `ter-${emailRef.current.value}-dp-edit`
+                          : `ter-${emailRef.current.value}-dp`,
+                        schoolID
+                      );
+                      if (uploadedUrl) {
+                        setUrlDP(uploadedUrl);
+                        setSelectedFile(null);
+                      }
+                    }}
+                    className="mt-3 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-indigo-500 transition disabled:opacity-50"
+                  >
+                    Upload Photo
+                  </button>
                 )}
               </div>
             </div>

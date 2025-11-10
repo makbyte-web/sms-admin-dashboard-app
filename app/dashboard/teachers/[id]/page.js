@@ -11,9 +11,8 @@ export default function SingleTeacherProfile() {
     async function fetchTeachers() {
       if (result) {
         setTeacherData({
-          type: "teacher",
           ...result,
-          imgSrc: result.imgSrc || Avatar,
+          type: "teacher",
         });
       }
     }

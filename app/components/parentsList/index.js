@@ -159,13 +159,13 @@ const ParentList = () => {
                       Name
                     </th>
                     <th className="dark:text-[--text] px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                      Qualification
+                    </th>
+                    <th className="dark:text-[--text] px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                       Email
                     </th>
                     <th className="dark:text-[--text] px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                       Contact
-                    </th>
-                    <th className="dark:text-[--text] px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Qualification
                     </th>
                     <th className="relative py-3.5 pl-3 pr-4 sm:pr-3">
                       <span className="sr-only">Edit</span>
@@ -195,14 +195,14 @@ const ParentList = () => {
                           {parent.parentName}
                         </Link>
                       </td>
+                      <td className="wrap dark:text-[--textSoft] px-3 py-4 text-sm text-gray-500">
+                        {parent.qualification}
+                      </td>
                       <td className="whitespace-nowrap dark:text-[--textSoft] px-3 py-4 text-sm text-gray-500">
                         {parent.email}
                       </td>
                       <td className="whitespace-nowrap dark:text-[--textSoft] px-3 py-4 text-sm text-gray-500">
                         {parent.contact}
-                      </td>
-                      <td className="whitespace-nowrap dark:text-[--textSoft] px-3 py-4 text-sm text-gray-500">
-                        {parent.qualification}
                       </td>
                       <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
                         <button

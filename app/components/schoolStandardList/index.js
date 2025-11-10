@@ -14,6 +14,7 @@ const SchoolStandardList = () => {
   const [selectedStandard, setSelectedStandard] = useState(null);
 
   const { user } = useUserContext();
+  
   const {
     userType,
     setUserType,
@@ -26,7 +27,9 @@ const SchoolStandardList = () => {
     title,
     handleModalOpen,
   } = useTheme();
+
   const loggedInUserID = user?.uid ? user?.uid : "NA";
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const schoolID = JSON.parse(localStorage.getItem("schoolID")) || "NA";
@@ -47,18 +50,12 @@ const SchoolStandardList = () => {
     } else {
       result = "You are not authorized to see Schools Standards List data";
     }
-    result.sort((std1, std2) => std1.stdName.localeCompare(std2.stdName));
+    if (Array.isArray(result)) result.sort((std1, std2) => std1.stdName.localeCompare(std2.stdName));
     if (result) setStandardListData(result);
   };
   useEffect(() => {
     fetchSchoolStandardList();
   }, [loggedInUserID, schoolID, userType]);
-
-  // Handle edit functionality
-  // const handleEdit = (stdID) => {
-  //   const standardToEdit = standardListData.find((std) => std.stdID === stdID);
-  //   // console.log("Editing standard:", standardToEdit);
-  // };
 
   // Handle delete functionality
   const handleDelete = (stdID) => {

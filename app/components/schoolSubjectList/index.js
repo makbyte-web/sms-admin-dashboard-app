@@ -1,74 +1,85 @@
 "use client";
-import { useTheme } from "@/context/themeContext";
-import { FeesType } from "@/firestore/documents/feesType";
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import DeleteModal from "../ui/deleteModal";
+import { Subjects } from "@/firestore/documents/subject";
+import { useUserContext } from "@/context/UserContext";
 import Link from "next/link";
+import { useTheme } from "@/context/themeContext";
 import Modal from "../ui/modal";
-import AddFeesType from "../addFeesTypeForm";
+import AddSubject from "../addSubject";
 
-export default function SchoolFeesTypeList() {
-  const [feesTypeListData, setFeesTypeListData] = useState([]);
-  const [selectedFeesTypeID, setSelectedFeesTypeID] = useState(null);
+const SchoolSubjectList = () => {
+  const [subjectListData, setSubjectListData] = useState([]);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedSubject, setSelectedSubject] = useState(null);
 
+  const { user } = useUserContext();
+  
   const {
-    isDeleteModalOpen,
-    handleCloseDeleteModal,
-    setIsDeleteModalOpen,
-    handleModalOpen,
     userType,
     setUserType,
+    schoolName,
+    setSchoolName,
     schoolID,
     setSchoolID,
-    loggedInUserID,
-    setLoggedInUserID,
     openModal,
     handleModalClose,
     title,
+    handleModalOpen,
   } = useTheme();
+
+  const loggedInUserID = user?.uid ? user?.uid : "NA";
+
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const loggedInUserID = JSON.parse(localStorage.getItem("userID")) || "NA";
       const schoolID = JSON.parse(localStorage.getItem("schoolID")) || "NA";
+      const schoolName = JSON.parse(localStorage.getItem("schoolName")) || "NA";
       const userType = JSON.parse(localStorage.getItem("userType")) || "NA";
       setSchoolID(schoolID);
+      setSchoolName(schoolName);
       setUserType(userType);
-      setLoggedInUserID(loggedInUserID);
     }
   }, []);
 
-  const handleDelete = (id) => {
-    setSelectedFeesTypeID(id);
-    setIsDeleteModalOpen(true);
-  };
-  const handleConfirmDelete = async () => {
-    if (selectedFeesTypeID) {
-      setFeesTypeListData(
-        feesTypeListData.filter(
-          (item) => item.feesTypeID !== selectedFeesTypeID
-        )
-      );
-      await FeesType.deleteFeesType(selectedFeesTypeID);
-      setIsDeleteModalOpen(false);
-      setSelectedFeesTypeID(null);
-    }
-  };
-
-  const fetchSchoolsTypeList = async () => {
+  const fetchSchoolSubjectList = async () => {
     let result;
     if (userType === "superadmin") {
-      result = await FeesType.getFeesTypeBySchool(schoolID);
+      result = await Subjects.getSubjectsBySchool(schoolID);
     } else if (userType === "schooladmin") {
-      result = await FeesType.getFeesTypeCreatedByUser(loggedInUserID);
+      result = await Subjects.getSubjectsCreatedByUser(loggedInUserID);
     } else {
-      result = "You are not authorized to see Schools Fees Type List data";
+      result = "You are not authorized to see Schools Subject List data";
     }
-    if (Array.isArray(result)) result.sort((fee1, fee2) => fee1.feesType.localeCompare(fee2.feesType));
-    if (result) setFeesTypeListData(result);
+    if (Array.isArray(result)) result.sort((obj1, obj2) => obj1.subName.localeCompare(obj2.subName))
+    if (result) setSubjectListData(result);
   };
+
   useEffect(() => {
-    fetchSchoolsTypeList();
+    fetchSchoolSubjectList();
   }, [loggedInUserID, schoolID, userType]);
+
+  // Handle delete functionality
+  const handleDelete = (stdID) => {
+    setSelectedSubject(stdID);
+    setDeleteModalOpen(true);
+  };
+
+  // Confirm delete
+  const handleConfirmDelete = async () => {
+    const updatedStandardList = subjectListData.filter(
+      (std) => std.stdID !== selectedSubject
+    );
+    setSubjectListData(updatedStandardList);
+    await Subjects.deleteSubject(selectedSubject);
+    setDeleteModalOpen(false);
+    setSelectedSubject(null);
+  };
+
+  // Close delete modal
+  const handleCloseDeleteModal = () => {
+    setDeleteModalOpen(false);
+    setSelectedSubject(null);
+  };
 
   return (
     <div className="mb-10">
@@ -84,17 +95,17 @@ export default function SchoolFeesTypeList() {
       </div>
       <div className="flex justify-end w-full mb-10">
         <button
-          onClick={() => handleModalOpen("Add Fees Type")}
+          onClick={() => handleModalOpen("Add Subject")}
           type="button"
           className="bg-indigo-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 transition justify-end"
         >
-          Add Fees Type
+          Add Subject
         </button>
       </div>
       <div className="mt-8 flow-root">
         <div className="text-center">
-          <span className="text-2xl font-medium leading-6 text-gray-900 dark:text-gray-200 ">
-            Fees Type List
+          <span className="text-2xl font-medium leading-6 text-gray-900 dark:text-gray-200">
+            Subject List
           </span>
         </div>
 
@@ -108,19 +119,19 @@ export default function SchoolFeesTypeList() {
                       scope="col"
                       className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-6"
                     >
-                      Fees Type
+                      &nbsp;
+                    </th>
+                    <th
+                      scope="col"
+                      className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-white sm:pl-6"
+                    >
+                      Subject
                     </th>
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-white"
                     >
                       Created Date
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-white"
-                    >
-                      Amount
                     </th>
                     <th
                       scope="col"
@@ -137,27 +148,24 @@ export default function SchoolFeesTypeList() {
                   </tr>
                 </thead>
                 <tbody className="divide-y dark:divide-gray-800 divide dark:bg-[#353e4b] bg-white">
-                  {feesTypeListData?.map((list, i) => (
+                  {subjectListData?.map((list, i) => (
                     <tr key={i}>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium dark:text-white sm:pl-6">
-                        {list?.feesType}
+                        {" "}
+                      </td>
+                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium dark:text-white sm:pl-6">
+                        {list?.subName}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm dark:text-gray-200">
                         {list?.createdDate}
-                      </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm dark:text-gray-200">
-                        &#8377;{" "}
-                        {list?.amount
-                          .toString()
-                          .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}
                       </td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                         <button
                           className="text-indigo-600 hover:dark:text-white"
                           onClick={() =>
                             handleModalOpen(
-                              "Edit Fees Type",
-                              list?.feesTypeID && list
+                              "Edit Subject",
+                              list?.subID && list
                             )
                           }
                         >
@@ -167,7 +175,7 @@ export default function SchoolFeesTypeList() {
                       <td className="whitespace-nowrap dark:text-[--textSoft] py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
                         <button
                           className="bg-red-600 px-2 py-1 rounded-lg text-white"
-                          onClick={() => handleDelete(list?.feesTypeID)}
+                          onClick={() => handleDelete(list?.subID)}
                         >
                           Delete
                         </button>
@@ -181,18 +189,22 @@ export default function SchoolFeesTypeList() {
         </div>
       </div>
       <Modal open={openModal} handleModalClose={handleModalClose}>
-        <AddFeesType
+        <AddSubject
           handleModalClose={handleModalClose}
           title={title}
-          fetchSchoolsTypeList={fetchSchoolsTypeList}
+          fetchSchoolSubjectList={fetchSchoolSubjectList}
         />
       </Modal>
-      <DeleteModal
-        modalType="Fees Type data"
-        open={isDeleteModalOpen}
-        onClose={handleCloseDeleteModal}
-        onConfirm={handleConfirmDelete}
-      />
+      {isDeleteModalOpen && (
+        <DeleteModal
+          modalType="Subject"
+          open={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
+      )}
     </div>
   );
-}
+};
+
+export default SchoolSubjectList;

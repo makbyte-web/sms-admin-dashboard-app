@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaTrashAlt } from "react-icons/fa";
 import Link from "next/link";
 import Header from "../ui/header";
 import DeleteModal from "../ui/deleteModal";
@@ -39,6 +38,7 @@ const TeacherList = () => {
   const [selectedTeachers, setSelectedTeachers] = useState([]);
   const [deleteItems, setDeleteItems] = useState([]);
   const [isBulkDelete, setIsBulkDelete] = useState(false);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const loggedInUserID = JSON.parse(localStorage.getItem("userID")) || "NA";
@@ -47,6 +47,7 @@ const TeacherList = () => {
       setLoggedInUserID(loggedInUserID);
     }
   }, []);
+
   const fetchTeachers = async () => {
     if (!schoolID || schoolID === "NA") {
       console.warn("fetchTeachers skipped: schoolID is missing");
@@ -64,6 +65,7 @@ const TeacherList = () => {
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
     if (!schoolID || schoolID === "NA") {
       console.warn("Waiting for valid schoolID...");
@@ -121,9 +123,9 @@ const TeacherList = () => {
         handleModalOpen={() => handleModalOpen("Add")}
       />
       <FilteredSearch
-        placeholder="Search By Teacher Name or Subject"
+        placeholder="Search By Teacher Name or Qualification"
         onChange={(e) =>
-          handleSearchInput(e, "teacherName", "subject", teachers)
+          handleSearchInput(e, "teacherName", "qualification", teachers)
         }
       />
       <div className="mt-8 flow-root">
@@ -168,13 +170,13 @@ const TeacherList = () => {
                       scope="col"
                       className="dark:text-[--text] px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Email
+                      Qualification
                     </th>
                     <th
                       scope="col"
                       className="dark:text-[--text] px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Subject
+                      Email
                     </th>
                     <th
                       scope="col"
@@ -232,11 +234,11 @@ const TeacherList = () => {
                             {teacher?.teacherName}
                           </Link>
                         </td>
-                        <td className="whitespace-nowrap dark:text-[--textSoft] px-3 py-4 text-sm text-gray-500">
-                          {teacher?.email}
+                        <td className="wrap dark:text-[--textSoft] px-3 py-4 text-sm text-gray-500">
+                          {teacher?.qualification}
                         </td>
                         <td className="whitespace-nowrap dark:text-[--textSoft] px-3 py-4 text-sm text-gray-500">
-                          {teacher?.subject}
+                          {teacher?.email}
                         </td>
                         <td className="whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-3">
                           <button

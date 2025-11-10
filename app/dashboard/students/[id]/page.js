@@ -24,7 +24,6 @@ export default function SingleStudentProfile() {
           setStudentData({
             ...result,
             type: "student",
-            imgSrc: result.imgSrc || Avatar,
           });
         }
       }

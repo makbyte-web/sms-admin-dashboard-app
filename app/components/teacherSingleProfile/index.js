@@ -58,7 +58,7 @@ const TeacherSingleProfile = ({ teacherData }) => {
           </div>
           <div>
             <Image
-              src={teacherData?.imgSrc ? teacherData?.imgSrc : NoAvatar}
+              src={teacherData?.urlDP ? teacherData?.urlDP : NoAvatar}
               alt="Teacher Avatar"
               className="rounded-xl"
               height={150}
@@ -87,7 +87,7 @@ const TeacherSingleProfile = ({ teacherData }) => {
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-xl font-medium leading-6 text-gray-900 dark:text-[--text]">
-              Role
+              Qualification
             </dt>
 
             <dd className="mt-1 text-lg leading-6 text-gray-700 dark:text-[--textSoft] sm:col-span-2 sm:mt-0">
@@ -96,18 +96,10 @@ const TeacherSingleProfile = ({ teacherData }) => {
           </div>
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
             <dt className="text-xl font-medium leading-6 text-gray-900 dark:text-[--text]">
-              Email address
+              Email
             </dt>
             <dd className="mt-1 text-lg leading-6 text-gray-700 dark:text-[--textSoft] sm:col-span-2 sm:mt-0">
               {teacherData?.email || "N/A"}
-            </dd>
-          </div>
-          <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="text-xl font-medium leading-6 text-gray-900 dark:text-[--text]">
-              Subject
-            </dt>
-            <dd className="mt-1 text-lg leading-6 text-gray-700 dark:text-[--textSoft] sm:col-span-2 sm:mt-0">
-              {teacherData?.subject || "N/A"}
             </dd>
           </div>
         </dl>
