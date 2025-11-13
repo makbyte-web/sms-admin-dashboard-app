@@ -4,13 +4,14 @@ import { collection, doc, addDoc, getDocs, getDoc, updateDoc, deleteDoc, query, 
 export class Attendance {
   static collectionName = "attendance";
 
-  constructor(schoolID, studentID, academicYear, attendance, attendanceDate, attendanceTime, createdDate, createdBy, updatedDate, updatedBy, attendanceID='new') {
+  constructor(schoolID, studentID, academicYear, attendance, attendanceDate, attendanceTime, source, createdDate, createdBy, updatedDate, updatedBy, attendanceID='new') {
     this.schoolID = schoolID;
     this.studentID = studentID;
     this.academicYear = academicYear;
     this.attendance = attendance;
     this.attendanceDate = attendanceDate;
-    this.attendanceTime=attendanceTime;
+    this.attendanceTime = attendanceTime;
+    this.source = source;
     this.createdDate = createdDate;
     this.createdBy = createdBy;
     this.updatedDate = updatedDate;
@@ -26,7 +27,8 @@ export class Attendance {
         academicYear: this.academicYear,
         attendance: this.attendance,
         attendanceDate: this.attendanceDate,
-        attendanceTime:this.attendanceTime,
+        attendanceTime: this.attendanceTime,
+        source: this.source,
         createdDate: this.createdDate,
         createdBy: this.createdBy,
         updatedDate: this.updatedDate,
@@ -49,7 +51,8 @@ export class Attendance {
         academicYear: this.academicYear,
         attendance: this.attendance,
         attendanceDate: this.attendanceDate,
-        attendanceTime:this.attendanceTime,
+        attendanceTime: this.attendanceTime,
+        source: this.source,
         createdDate: this.createdDate,
         createdBy: this.createdBy,
         updatedDate: this.updatedDate,

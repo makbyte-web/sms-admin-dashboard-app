@@ -157,12 +157,13 @@ const Scanner = () => {
               "P",
               today,
               new Date().toLocaleTimeString("en-IN"),
+              "dashboard-app-daily",
               today,
               loggedInUserID,
               "NA",
               "NA"
             );
-
+            
             const retval = await newAttendance.addAttendance();
             const subheading = `Attendance marked for ${studentName}`;
             alert(
