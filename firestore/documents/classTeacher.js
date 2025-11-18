@@ -120,6 +120,20 @@ export class ClassTeacher {
     }
   };
 
+  static getRolesSubjectByTeacherID = async (teacherID) => {
+    try {
+      const data = [];
+      const queryRes = query(collection(db, ClassTeacher.collectionName.toString()), where("teacherID", "==", teacherID));
+      const querySnapshot = await getDocs(queryRes);
+      querySnapshot.forEach((doc) => {
+        data.push({ ctID: doc.id, ...doc.data() });
+      });
+      return data;
+    } catch (error) {
+      console.log("Error in getRolesSubjectBySchool:", error);
+    }
+  };
+
   static getClassTeacherByID = async (ctID) => {
     try {
       const docRef = doc(db, ClassTeacher.collectionName.toString(), ctID);
