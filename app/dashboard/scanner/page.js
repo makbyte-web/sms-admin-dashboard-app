@@ -166,9 +166,7 @@ const Scanner = () => {
             
             const retval = await newAttendance.addAttendance();
             const subheading = `Attendance marked for ${studentName}`;
-            alert(
-              `${subheading} on ${today} recorded with AttendanceID: ${retval}`
-            );
+            alert(`${subheading} on ${today} recorded with AttendanceID: ${retval}`);
 
             if (fcmData?.length) {
               await sendNotification(

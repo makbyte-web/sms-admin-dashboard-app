@@ -113,7 +113,7 @@ export default function StudentList({
     if (userType === "superadmin") {
       studentsRes = await Students.getStudentsBySchool(schoolID);
     } else if (userType === "schooladmin") {
-      studentsRes = await Students.getStudentsCreatedByUser(user?.uid);
+      studentsRes = await Students.getStudentsCreatedByUser(loggedInUserID);
     } else {
       console.warn("Unauthorized userType:", userType);
       return;

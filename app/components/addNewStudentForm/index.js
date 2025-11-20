@@ -125,6 +125,9 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
         studentName: nameRef.current.value,
         studentID: studentReturnID,
         academicYear: academicYear,
+        stdID: stdRef.current.value,
+        divID: divRef.current.value,
+        grNO: grNoRef.current.value
       });
 
       if (finalUrlQR) {
@@ -157,7 +160,6 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
         emailRef.current.value,
         grNoRef.current.value,
         academicYear,
-        // isEditing?.urlDP,
         finalUrlDP,
         isEditing?.urlQR,
         isEditing?.createdDate,
@@ -170,34 +172,37 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
       // if (retval) alert(`Student updated with ID:${studentReturnID}`);
 
       // Update QR code if needed will uncomment below code
-      // const finalUrlQR = await generateQR({
-      //   schoolID: schoolID,
-      //   studentName: nameRef.current.value,
-      //   studentID: studentReturnID,
-      //   academicYear: academicYear
-      // });
+      const finalUrlQR = await generateQR({
+        schoolID: schoolID,
+        studentName: nameRef.current.value,
+        studentID: studentReturnID,
+        academicYear: academicYear,
+        stdID: stdRef.current.value,
+        divID: divRef.current.value,
+        grNO: grNoRef.current.value
+      });
 
-      // if (finalUrlQR) {
-      //   // update student with QR code
-      //   const studentWithQR = new Students(
-      //     schoolID,
-      //     existsingStudent.studentName,
-      //     existsingStudent.stdID,
-      //     existsingStudent.divID,
-      //     existsingStudent.email,
-      //     existsingStudent.grNo,
-      //     existsingStudent.academicYear,
-      //     existsingStudent.urlDP ,
-      //     finalUrlQR,
-      //     existsingStudent.createdDate,
-      //     existsingStudent.createdBy,
-      //     existsingStudent.updatedDate,
-      //     existsingStudent.updatedBy,
-      //     studentReturnID
-      //   );
-      //   retval = await studentWithQR.updateStudent();
-      //   // alert(`Student updated with QR Code ${retval}`);
-      // }
+      if (finalUrlQR) {
+        // update student with QR code
+        const studentWithQR = new Students(
+          schoolID,
+          existsingStudent.studentName,
+          existsingStudent.stdID,
+          existsingStudent.divID,
+          existsingStudent.email,
+          existsingStudent.grNo,
+          existsingStudent.academicYear,
+          existsingStudent.urlDP,
+          finalUrlQR,
+          existsingStudent.createdDate,
+          existsingStudent.createdBy,
+          existsingStudent.updatedDate,
+          existsingStudent.updatedBy,
+          studentReturnID
+        );
+        retval = await studentWithQR.updateStudent();
+        // alert(`Student updated with QR Code ${retval}`);
+      }
     }
     handleModalClose();
     setSchoolFormData({

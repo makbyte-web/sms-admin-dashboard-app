@@ -108,7 +108,10 @@ export const acceptFileDataToUpload = async (fileData, source, schoolID, userID)
                     schoolID: student.schoolID,
                     studentName: student.studentName,
                     studentID: student.studentID,
-                    academicYear: student.academicYear
+                    academicYear: student.academicYear,
+                    stdID: student.stdID,
+                    divID: student.divID,
+                    grNO: student.grNO
                 }));
 
                 let existsingStudent = new Students(
