@@ -44,8 +44,8 @@ export const ThemeProvider = ({ children }) => {
     const value = e.target.value.toLowerCase();
     setSearchInput(value);
     const filtered = data?.filter((obj) => {
-      const field1 = obj[key1]?.toLowerCase() || "";
-      const field2 = obj[key2]?.toLowerCase() || "";
+      const field1 = String(obj[key1] ?? "").toLowerCase();
+      const field2 = String(obj[key2] ?? "").toLowerCase();
 
       return field1.includes(value) || field2.includes(value);
     });
