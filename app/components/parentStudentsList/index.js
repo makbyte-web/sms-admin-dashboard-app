@@ -13,9 +13,11 @@ import Modal from "../ui/modal";
 import AddLinkParentStudents from "../addLinkParentStudents";
 
 const ParentStudentsList = ({ handleModalOpen }) => {
+
   const [parentStudentsData, setParentStudentsData] = useState([]);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedParentStudent, setSelectedParentStudent] = useState(null);
+  const [parentsId, setParentsId] = useState("");
 
   const { user } = useUserContext();
   const {
@@ -44,7 +46,6 @@ const ParentStudentsList = ({ handleModalOpen }) => {
   }, []);
 
   const fetchParentStudents = async () => {
-    // console.log("Fetching parent-student data...");
     let result = [],
       parentStudentsResult = [],
       parentsResult = [],
@@ -68,16 +69,11 @@ const ParentStudentsList = ({ handleModalOpen }) => {
         return;
       }
 
-      // console.log("Fetched Parent-Student Relationships:",parentStudentsResult);
-
       if (parentStudentsResult?.length > 0) {
         [parentsResult, studentsResult] = await Promise.all([
           Parents.getParentsBySchool(schoolID),
           Students.getStudentsBySchool(schoolID),
         ]);
-
-        // console.log("Fetched Parents:", parentsResult);
-        // console.log("Fetched Students:", studentsResult);
 
         const parentsMap = parentsResult.reduce((acc, parent) => {
           acc[parent.parentID] = parent.parentName;
@@ -102,8 +98,6 @@ const ParentStudentsList = ({ handleModalOpen }) => {
             childrenNames,
           };
         });
-
-        // console.log("Final Parent-Student Data with Names:", result);
       } else {
         console.warn("No parent-student relationships found.");
       }
@@ -114,12 +108,16 @@ const ParentStudentsList = ({ handleModalOpen }) => {
           data1.parentName.localeCompare(data2.parentName)
         );
       }
-
+      const existingParentsId = result.map((item) => item.parentID);
+      const strParentsId = existingParentsId.join(" ");  
+      setParentsId(strParentsId);
       setParentStudentsData(result);
     } catch (error) {
       console.error("Error fetching parent-student data:", error);
     }
   };
+ 
+
   useEffect(() => {
     fetchParentStudents();
   }, [loggedInUserID, schoolID, userType]);
@@ -159,7 +157,7 @@ const ParentStudentsList = ({ handleModalOpen }) => {
       </div>
       <div className="flex justify-end w-full mb-10">
         <button
-          onClick={() => handleModalOpen("Add Parent Students Link")}
+          onClick={() => handleModalOpen("Add Parent Students Link", parentsId)}
           type="button"
           className="bg-indigo-600 text-white px-4 py-2 rounded-md shadow-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 transition justify-end"
         >
