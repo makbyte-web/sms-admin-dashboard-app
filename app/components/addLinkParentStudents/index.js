@@ -282,11 +282,11 @@ export default function AddLinkParentStudents({
                     : parents &&
                       parents.length &&
                       parents.map((item, i) => {
-                        return (
+                        return  !isEditing.includes(item.parentID) ? (                          
                           <option key={item.parentID} value={item.parentID}>
                             {item.parentName}
                           </option>
-                        );
+                        ) : null;
                       })}
                 </select>
               </div>
