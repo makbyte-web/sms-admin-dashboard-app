@@ -1,10 +1,12 @@
 import { db } from "@/lib/firebase";
 import { collection, doc, addDoc, getDocs, getDoc, updateDoc, deleteDoc, query, where } from "firebase/firestore";
+import { deleteCloudinaryImage } from "@/actions/file";
+import { defaultUrlDP } from "@/defaults";
 
 export class Parents {
   static collectionName = "parents";
 
-  constructor(parentName, qualification, email, password, sceretQts, sceretAns, noOfChildren, address, contact, urlDP, createdDate, createdBy, updatedDate, updatedBy, schoolID='new', parentID='new') {
+  constructor(parentName, qualification, email, password, sceretQts, sceretAns, noOfChildren, address, contact, urlDP, cloudinaryImageId, createdDate, createdBy, updatedDate, updatedBy, schoolID = "new", parentID = "new") {
     this.parentName = parentName;
     this.qualification = qualification;
     this.email = email;
@@ -15,6 +17,7 @@ export class Parents {
     this.address = address;
     this.contact = contact;
     this.urlDP = urlDP;
+    this.cloudinaryImageId = cloudinaryImageId || "";
     this.createdDate = createdDate;
     this.createdBy = createdBy;
     this.updatedDate = updatedDate;
@@ -28,7 +31,7 @@ export class Parents {
       const newData = {
         schoolID: this.schoolID,
         parentName: this.parentName,
-        qualification : this.qualification,
+        qualification: this.qualification,
         email: this.email,
         password: this.password,
         sceretQts: this.sceretQts,
@@ -37,26 +40,32 @@ export class Parents {
         address: this.address,
         contact: this.contact,
         urlDP: this.urlDP,
+        cloudinaryImageId: this.cloudinaryImageId,
         createdDate: this.createdDate,
         createdBy: this.createdBy,
         updatedDate: this.updatedDate,
         updatedBy: this.updatedBy
       };
-      const docRef = await addDoc(collection(db, Parents.collectionName.toString()), { ...newData });
-      //console.log("Parent added with ID:", docRef?.id);
+
+      await addDoc(collection(db, Parents.collectionName), newData);
       return true;
     } catch (error) {
-      console.log("Error in addNewParent:", error);
+      console.log("Error in addParent:", error);
     }
   };
 
   updateParent = async () => {
     try {
-      const parentID = this.parentID;
+      const docRef = doc(
+        db,
+        Parents.collectionName,
+        this.parentID
+      );
+
       const newData = {
         schoolID: this.schoolID,
         parentName: this.parentName,
-        qualification : this.qualification,
+        qualification: this.qualification,
         email: this.email,
         password: this.password,
         sceretQts: this.sceretQts,
@@ -65,14 +74,14 @@ export class Parents {
         address: this.address,
         contact: this.contact,
         urlDP: this.urlDP,
+        cloudinaryImageId: this.cloudinaryImageId,
         createdDate: this.createdDate,
         createdBy: this.createdBy,
         updatedDate: this.updatedDate,
-        updatedBy: this.updatedBy,
+        updatedBy: this.updatedBy
       };
-      const docRef = doc(db, Parents.collectionName.toString(), parentID);
-      await updateDoc(docRef, { ...newData });
-      // console.log(`Parent ${parentID} updated`);
+
+      await updateDoc(docRef, newData);
       return true;
     } catch (error) {
       console.log("Error in updateParent:", error);
@@ -81,8 +90,26 @@ export class Parents {
 
   static deleteParent = async (parentID) => {
     try {
-      await deleteDoc(doc(db, Parents.collectionName.toString(), parentID));
-      // console.log(`Parent ${parentID} deleted`);
+      const docRef = doc(
+        db,
+        Parents.collectionName,
+        parentID
+      );
+
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const parent = docSnap.data();
+
+        if (
+          parent.cloudinaryImageId &&
+          parent.urlDP !== defaultUrlDP
+        ) {
+          await deleteCloudinaryImage(parent.cloudinaryImageId);
+        }
+      }
+
+      await deleteDoc(docRef);
       return true;
     } catch (error) {
       console.log("Error in deleteParent:", error);
@@ -92,12 +119,14 @@ export class Parents {
   static getParents = async () => {
     try {
       const querySnapshot = await getDocs(
-        collection(db, Parents.collectionName.toString())
+        collection(db, Parents.collectionName)
       );
+
       const data = [];
       querySnapshot.forEach((doc) => {
         data.push({ parentID: doc.id, ...doc.data() });
       });
+
       return data;
     } catch (error) {
       console.log("Error in getParents:", error);
@@ -107,11 +136,16 @@ export class Parents {
   static getParentsCreatedByUser = async (userID) => {
     try {
       const data = [];
-      const queryRes = query(collection(db, Parents.collectionName.toString()), where("createdBy", "==", userID));
-      const querySnapshot = await getDocs(queryRes);
+      const q = query(
+        collection(db, Parents.collectionName),
+        where("createdBy", "==", userID)
+      );
+
+      const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         data.push({ parentID: doc.id, ...doc.data() });
       });
+
       return data;
     } catch (error) {
       console.log("Error in getParentsCreatedByUser:", error);

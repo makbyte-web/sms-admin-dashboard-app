@@ -28,21 +28,27 @@ const uploadFiletoCloud = async (file, options) => {
 
 export const acceptFileToUpload = async (formData, name, id, folder) => {
   try {
-    // console.log("In acceptFileToUpload", formData, name, id, folder);
-
     const file = formData.get(name);
-    // console.log('FILE:',file)
 
     if (file instanceof File) {
       const result = await uploadFiletoCloud(file, {asset_folder: `sms-admin-dashboard/${folder}`, public_id: `${id}`})
 
       // code to return URL
-      // console.log('after upload:',  result)
       if (result) return result
-
     }
   }
   catch(error) {
     console.log(`Error in acceptFileToUpload ${error}`)
+  }
+};
+
+export const deleteCloudinaryImage = async (public_id) => {
+  if (!public_id) return;
+
+  try {
+    const result = await cloud.uploader.destroy(public_id);
+    return result;
+  } catch (error) {
+    console.log("Error in deleteCloudinaryImage:", error);
   }
 };

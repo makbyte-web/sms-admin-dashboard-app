@@ -5,6 +5,7 @@ import AddModal from "../ui/addModal";
 import { Parents } from "@/firestore/documents/parent";
 import { useUserContext } from "@/context/UserContext";
 import { defaultUrlDP } from "@/defaults";
+import { deleteCloudinaryImage } from "@/actions/file";
 
 export default function AddNewParentForm({
   handleModalClose,
@@ -32,11 +33,11 @@ export default function AddNewParentForm({
     selectedFile,
     setSelectedFile,
   } = useTheme();
+
   const { user } = useUserContext();
 
-  let retval;
-
   const loggedInUserID = user?.uid ? user?.uid : "NA";
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const schoolID = JSON.parse(localStorage.getItem("schoolID")) || "NA";
@@ -56,9 +57,16 @@ export default function AddNewParentForm({
     contact: isEditing?.contact || "",
     urlDP: isEditing?.urlDP || "",
   });
+
   const [urlDP, setUrlDP] = useState(
     parentFormData?.urlDP ? parentFormData?.urlDP : defaultUrlDP
   );
+
+  const [cloudinaryImageId, setCloudinaryImageId] = useState(
+    isEditing?.cloudinaryImageId || ""
+  );
+
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     setParentFormData({
@@ -73,18 +81,13 @@ export default function AddNewParentForm({
       contact: isEditing?.contact || "",
       urlDP: isEditing?.urlDP || "",
     });
+
+    setUrlDP(isEditing?.urlDP || defaultUrlDP);
+    setCloudinaryImageId(isEditing?.cloudinaryImageId || "");
   }, [isEditing]);
 
-  // const handleFileChange = (event) => {
-  //   const file = event.target.files[0];
-  //   setParentFormData((prevData) => ({
-  //     ...prevData,
-  //     image: file,
-  //   }));
-  // };
-
   const handleFormSubmit = async () => {
-    const finalUrlDP = urlDP !== undefined ? urlDP : defaultUrlDP;
+    const finalUrlDP = urlDP || defaultUrlDP;
 
     if (title === "Add") {
       const newParent = new Parents(
@@ -98,14 +101,18 @@ export default function AddNewParentForm({
         addressRef.current.value,
         contactRef.current.value,
         finalUrlDP,
+        cloudinaryImageId,
         new Date().toLocaleDateString("en-IN"),
         loggedInUserID,
         "NA",
         "NA",
         schoolID
       );
-      retval = await newParent.addParent();
-    } else if (title === "Edit") {
+
+      await newParent.addParent();
+    }
+
+    if (title === "Edit") {
       const existsingParent = new Parents(
         parentNameRef.current.value,
         qualificationRef.current.value,
@@ -117,6 +124,7 @@ export default function AddNewParentForm({
         addressRef.current.value,
         contactRef.current.value,
         finalUrlDP,
+        cloudinaryImageId,
         isEditing?.createdDate,
         isEditing?.createdBy,
         new Date().toLocaleDateString("en-IN"),
@@ -124,21 +132,11 @@ export default function AddNewParentForm({
         isEditing?.schoolID,
         isEditing?.parentID
       );
-      retval = await existsingParent.updateParent();
+
+      await existsingParent.updateParent();
     }
 
     handleModalClose();
-    setParentFormData({
-      parentName: parentNameRef.current.value,
-      qualification: qualificationRef.current.value,
-      email: emailRef.current.value,
-      password: passwordRef.current.value,
-      sceretQts: sceretQtsRef.current.value,
-      sceretAns: sceretAnsRef.current.value,
-      noOfChildren: noOfChildrenRef.current.value,
-      address: addressRef.current.value,
-      contact: contactRef.current.value,
-    });
     fetchParents();
   };
 
@@ -411,23 +409,48 @@ export default function AddNewParentForm({
                   <button
                     type="button"
                     onClick={async () => {
-                      const uploadedUrl = await handleFileChange(
-                        { target: { files: [selectedFile] } },
-                        "parent-profile",
-                        title === "Edit"
-                          ? `par-${contactRef.current.value}-dp-edit`
-                          : `par-${contactRef.current.value}-dp`,
-                        schoolID
-                      );
+                      setIsUploading(true);
+                      try {
+                        const { url: uploadedUrl, public_id } =
+                          await handleFileChange(
+                            { target: { files: [selectedFile] } },
+                            "parent-profile",
+                            `par-${contactRef.current.value}-dp`,
+                            schoolID
+                          );
 
-                      if (uploadedUrl) {
-                        setUrlDP(uploadedUrl);
-                        setSelectedFile(null);
+                        if (uploadedUrl) {
+                          if (
+                            title === "Edit" &&
+                            isEditing?.cloudinaryImageId &&
+                            isEditing?.cloudinaryImageId !== public_id &&
+                            isEditing?.urlDP !== defaultUrlDP
+                          ) {
+                            await deleteCloudinaryImage(
+                              isEditing.cloudinaryImageId
+                            );
+                          }
+
+                          setUrlDP(uploadedUrl);
+                          setCloudinaryImageId(public_id);
+                          setSelectedFile(null);
+                        }
+                      } catch (error) {
+                        console.error("Error uploading file:", error);
+                      } finally {
+                        setIsUploading(false);
                       }
                     }}
                     className="mt-3 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-indigo-500 transition disabled:opacity-50"
                   >
-                    Upload Photo
+                    {isUploading ? (
+                      <div className="flex flex-col items-center">
+                        <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full  animate-spin"></div>
+                        <span className="text-xs mt-1">Uploading...</span>
+                      </div>
+                    ) : (
+                      "Upload Photo"
+                    )}
                   </button>
                 )}
               </div>

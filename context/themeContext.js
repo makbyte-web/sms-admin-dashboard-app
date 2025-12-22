@@ -87,6 +87,7 @@ export const ThemeProvider = ({ children }) => {
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
+   
   const handleFileChange = async (e, name, id, folder) => {
     const file = await e.target.files[0];
 
@@ -107,7 +108,7 @@ export const ThemeProvider = ({ children }) => {
     try {
       const res = await acceptFileToUpload(formData, name, id, folder);
       console.log("File uploaded successfully!");
-      return res?.url;
+      return res;
     } catch (error) {
       console.error("Error uploading file:", error);
     }

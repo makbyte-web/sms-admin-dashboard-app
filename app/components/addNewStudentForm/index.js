@@ -8,6 +8,7 @@ import { Standards } from "@/firestore/documents/standard";
 import { Divisions } from "@/firestore/documents/division";
 import QRCode from "qrcode";
 import { defaultUrlDP } from "@/defaults";
+import { deleteCloudinaryImage } from "@/actions/file";
 
 export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
   const {
@@ -40,6 +41,11 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
   const [urlDP, setUrlDP] = useState(
     schoolFormData?.urlDP ? schoolFormData?.urlDP : defaultUrlDP
   );
+
+  const [cloudinaryImageId, setCloudinaryImageId] = useState(
+    isEditing?.cloudinaryImageId || ""
+  );
+  const [isUploading, setIsUploading] = useState(false);
   const [academicYear, setAcademicYear] = useState("");
 
   const { user } = useUserContext();
@@ -113,6 +119,7 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
         academicYear,
         finalUrlDP,
         "NA",
+        cloudinaryImageId,
         new Date().toLocaleDateString("en-IN"),
         loggedInUserID,
         "NA",
@@ -127,7 +134,7 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
         academicYear: academicYear,
         stdID: stdRef.current.value,
         divID: divRef.current.value,
-        grNO: grNoRef.current.value
+        grNO: grNoRef.current.value,
       });
 
       if (finalUrlQR) {
@@ -142,6 +149,7 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
           newStudent.academicYear,
           newStudent.urlDP,
           finalUrlQR,
+          cloudinaryImageId,
           newStudent.createdDate,
           newStudent.createdBy,
           newStudent.updatedDate,
@@ -162,6 +170,7 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
         academicYear,
         finalUrlDP,
         isEditing?.urlQR,
+        cloudinaryImageId,
         isEditing?.createdDate,
         isEditing?.createdBy,
         new Date().toLocaleDateString("en-IN"),
@@ -179,7 +188,7 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
         academicYear: academicYear,
         stdID: stdRef.current.value,
         divID: divRef.current.value,
-        grNO: grNoRef.current.value
+        grNO: grNoRef.current.value,
       });
 
       if (finalUrlQR) {
@@ -194,6 +203,7 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
           existsingStudent.academicYear,
           existsingStudent.urlDP,
           finalUrlQR,
+          existsingStudent.cloudinaryImageId,
           existsingStudent.createdDate,
           existsingStudent.createdBy,
           existsingStudent.updatedDate,
@@ -412,8 +422,8 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
                   const file = e.target.files[0];
                   if (!file) return;
 
-                  setSelectedFile(file); // store file
-                  setUrlDP(URL.createObjectURL(file)); // preview
+                  setSelectedFile(file);
+                  setUrlDP(URL.createObjectURL(file)); 
                 }}
                 className="block w-full cursor-pointer rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 px-4 text-gray-900 dark:text-gray-200 shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500"
               />
@@ -430,23 +440,47 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
                 <button
                   type="button"
                   onClick={async () => {
-                    const uploadedUrl = await handleFileChange(
-                      { target: { files: [selectedFile] } },
-                      "student-profile",
-                      title === "Edit"
-                        ? `std-${grNoRef.current.value}-dp-edit`
-                        : `std-${grNoRef.current.value}-dp-add`,
-                      schoolID
-                    );
+                    setIsUploading(true);
+                    try {
+                      const { url: uploadedUrl, public_id: publicId } =
+                        await handleFileChange(
+                          { target: { files: [selectedFile] } },
+                          "student-profile",
+                          `std-${grNoRef.current.value}-dp`,
+                          schoolID
+                        );
 
-                    if (uploadedUrl) {
-                      setUrlDP(uploadedUrl);
-                      setSelectedFile(null);
+                      if (uploadedUrl) {
+                        if (
+                          title === "Edit" &&
+                          isEditing?.cloudinaryImageId &&
+                          isEditing?.cloudinaryImageId !== publicId &&
+                          isEditing?.urlDP !== defaultUrlDP
+                        ) {
+                          await deleteCloudinaryImage(
+                            isEditing.cloudinaryImageId
+                          );
+                        }
+                        setUrlDP(uploadedUrl);
+                        setSelectedFile(null);
+                        setCloudinaryImageId(publicId);
+                      }
+                    } catch (error) {
+                      console.error("Error uploading file:", error);
+                    } finally {
+                      setIsUploading(false);
                     }
                   }}
                   className="mt-3 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-indigo-500 transition disabled:opacity-50"
                 >
-                  Upload Photo
+                  {isUploading ? (
+                    <div className="flex flex-col items-center">
+                      <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full  animate-spin"></div>
+                      <span className="text-xs mt-1">Uploading...</span>
+                    </div>
+                  ) : (
+                    "Upload Photo"
+                  )}
                 </button>
               )}
             </div>

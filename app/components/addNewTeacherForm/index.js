@@ -5,6 +5,7 @@ import AddModal from "../ui/addModal";
 import { Teachers } from "@/firestore/documents/teacher";
 import { useUserContext } from "@/context/UserContext";
 import { defaultUrlDP } from "@/defaults";
+import { deleteCloudinaryImage } from "@/actions/file";
 
 export default function AddNewTeacherForm({
   handleModalClose,
@@ -54,6 +55,12 @@ export default function AddNewTeacherForm({
   const [urlDP, setUrlDP] = useState(
     teacherFormData?.urlDP ? teacherFormData?.urlDP : defaultUrlDP
   );
+
+  const [cloudinaryImageId, setCloudinaryImageId] = useState(
+    isEditing?.cloudinaryImageId || ""
+  );
+
+  const [isUploading, setIsUploading] = useState(false);
   console.log("url Dp :", urlDP);
 
   useEffect(() => {
@@ -89,6 +96,7 @@ export default function AddNewTeacherForm({
         sceretAnsRef.current.value,
         qualificationRef.current.value,
         finalUrlDP,
+        cloudinaryImageId,
         new Date().toLocaleDateString("en-IN"),
         loggedInUserID,
         "NA",
@@ -105,6 +113,7 @@ export default function AddNewTeacherForm({
         sceretAnsRef.current.value,
         qualificationRef.current.value,
         finalUrlDP,
+        cloudinaryImageId,
         isEditing?.createdDate,
         isEditing?.createdBy,
         new Date().toLocaleDateString("en-IN"),
@@ -320,22 +329,48 @@ export default function AddNewTeacherForm({
                   <button
                     type="button"
                     onClick={async () => {
-                      const uploadedUrl = await handleFileChange(
-                        { target: { files: [selectedFile] } },
-                        "teacher-profile",
-                        title === "Edit"
-                          ? `ter-${emailRef.current.value}-dp-edit`
-                          : `ter-${emailRef.current.value}-dp`,
-                        schoolID
-                      );
-                      if (uploadedUrl) {
-                        setUrlDP(uploadedUrl);
-                        setSelectedFile(null);
+                      setIsUploading(true);
+                      try {
+                        const { url: uploadedUrl, public_id } =
+                          await handleFileChange(
+                            { target: { files: [selectedFile] } },
+                            "teacher-profile",
+                            `ter-${emailRef.current.value}-dp`,
+                            schoolID
+                          );
+
+                        if (uploadedUrl) {
+                          if (
+                            title === "Edit" &&
+                            isEditing?.cloudinaryImageId &&
+                            isEditing?.cloudinaryImageId !== public_id &&
+                            isEditing?.urlDP !== defaultUrlDP
+                          ) {
+                            await deleteCloudinaryImage(
+                              isEditing.cloudinaryImageId
+                            );
+                          }
+
+                          setUrlDP(uploadedUrl);
+                          setCloudinaryImageId(public_id);
+                          setSelectedFile(null);
+                        }
+                      } catch (error) {
+                        console.error("Error uploading file:", error);
+                      } finally {
+                        setIsUploading(false);
                       }
                     }}
                     className="mt-3 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-indigo-500 transition disabled:opacity-50"
                   >
-                    Upload Photo
+                    {isUploading ? (
+                      <div className="flex flex-col items-center">
+                        <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full  animate-spin"></div>
+                        <span className="text-xs mt-1">Uploading...</span>
+                      </div>
+                    ) : (
+                      "Upload Photo"
+                    )}
                   </button>
                 )}
               </div>

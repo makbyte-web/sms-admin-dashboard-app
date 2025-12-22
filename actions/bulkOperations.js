@@ -11,7 +11,7 @@ export const acceptFileDataToUpload = async (fileData, source, schoolID, userID)
     let dataToInsert
     let dataToInsertWithStdDiv
     if (source === 'teachers') {
-        dataToInsert = fileData?.map((data) => ({...data, createdDate: new Date().toLocaleDateString("en-IN"), createdBy: userID, updatedDate: 'NA', updatedBy: 'NA', schoolID: schoolID, teacherID: 'new'}))
+        dataToInsert = fileData?.map((data) => ({...data, cloudinaryImageId: 'NA', createdDate: new Date().toLocaleDateString("en-IN"), createdBy: userID, updatedDate: 'NA', updatedBy: 'NA', schoolID: schoolID, teacherID: 'new'}))
         dataToInsert.forEach(async (element) => {
             let newTeacher = new Teachers(
                 element.teacherName,
@@ -21,6 +21,7 @@ export const acceptFileDataToUpload = async (fileData, source, schoolID, userID)
                 element.sceretAns,
                 element.qualification,
                 element.urlDP,
+                element.cloudinaryImageId,
                 element.createdDate,
                 element.createdBy,
                 element.updatedDate,
@@ -34,7 +35,7 @@ export const acceptFileDataToUpload = async (fileData, source, schoolID, userID)
         return {returnSource: source, recordInserted: dataToInsert.length}
 
     } else if (source === 'parents') {
-        dataToInsert = fileData?.map((data) => ({...data, createdDate: new Date().toLocaleDateString("en-IN"), createdBy: userID, updatedDate: 'NA', updatedBy: 'NA', schoolID: schoolID, parentID: 'new'}))
+        dataToInsert = fileData?.map((data) => ({...data, cloudinaryImageId: 'NA', createdDate: new Date().toLocaleDateString("en-IN"), createdBy: userID, updatedDate: 'NA', updatedBy: 'NA', schoolID: schoolID, parentID: 'new'}))
         dataToInsert.forEach(async (element) => {
             let newParent = new Parents(
                 element.parentName,
@@ -47,6 +48,7 @@ export const acceptFileDataToUpload = async (fileData, source, schoolID, userID)
                 element.address,
                 element.contact,
                 element.urlDP,
+                element.cloudinaryImageId,
                 element.createdDate,
                 element.createdBy,
                 element.updatedDate,
@@ -59,7 +61,7 @@ export const acceptFileDataToUpload = async (fileData, source, schoolID, userID)
 
         return {returnSource: source, recordInserted: dataToInsert.length}
     } else if(source === 'students') {
-        dataToInsert = fileData?.map((data) => ({...data, createdDate: new Date().toLocaleDateString("en-IN"), createdBy: userID, updatedDate: 'NA', updatedBy: 'NA', schoolID: schoolID, studentID: 'new'}))
+        dataToInsert = fileData?.map((data) => ({...data, cloudinaryImageId: 'NA', createdDate: new Date().toLocaleDateString("en-IN"), createdBy: userID, updatedDate: 'NA', updatedBy: 'NA', schoolID: schoolID, studentID: 'new'}))
         if (dataToInsert?.length > 0) {
             const stdResult = await Standards.getStandardsBySchool(schoolID);
             const divResult = await Divisions.getDivisionsBySchool(schoolID);
@@ -91,6 +93,7 @@ export const acceptFileDataToUpload = async (fileData, source, schoolID, userID)
                     element.academicYear,
                     element.urlDP,
                     "NA",
+                    element.cloudinaryImageId,
                     element.createdDate,
                     element.createdBy,
                     element.updatedDate,
@@ -124,6 +127,7 @@ export const acceptFileDataToUpload = async (fileData, source, schoolID, userID)
                     student.academicYear,
                     student.urlDP,
                     finalUrlQR,
+                    student.cloudinaryImageId,
                     student.createdDate,
                     student.createdBy,
                     student.updatedDate,
