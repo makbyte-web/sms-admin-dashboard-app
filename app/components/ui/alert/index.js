@@ -25,7 +25,7 @@ export default function Alert({ handleModalOpen, page }) {
         <div className="ml-3">
           {userType === "superadmin" ? (
             <p className="text-sm text-[--bg]">
-              Super Admin cannot see this page
+              Select a School to view this page or Data for this page is not yet added.
             </p>
           ) : (
             <p className="text-sm text-[--bg]">

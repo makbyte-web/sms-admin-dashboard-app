@@ -36,8 +36,8 @@ export default function AddNewSchoolForm({ handleModalClose, fetchSchool }) {
   const loggedInUserID = user?.uid ? user?.uid : "NA";
 
   const handleFormSubmit = async () => {
-    const finalURLDP = urlDP !== undefined ? urlDP : defaultURLDP;
-    const finalPhotoURL = urlAdminDP !== undefined ? urlAdminDP : defaultPhotoURL;
+    const finalURLDP = urlDP !== undefined ? urlDP?.url : defaultURLDP;
+    const finalPhotoURL = urlAdminDP !== undefined ? urlAdminDP?.url : defaultPhotoURL;
 
     if (title === "Add") {
       const newSchool = new Schools(
@@ -55,6 +55,7 @@ export default function AddNewSchoolForm({ handleModalClose, fetchSchool }) {
         finalPhotoURL,
         contactNoRef.current.value
       );
+
       retval = await newSchool.addSchool();
       // if (retval) alert("School added", retval);
     } else if (title === "Edit") {
@@ -322,7 +323,7 @@ export default function AddNewSchoolForm({ handleModalClose, fetchSchool }) {
                 htmlFor="photo"
                 className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100"
               >
-                Upload Photo
+                Upload School Photo
               </label>
               <div className="mt-2">
                 {title === "Edit" ? (

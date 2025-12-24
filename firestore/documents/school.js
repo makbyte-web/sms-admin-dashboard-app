@@ -5,6 +5,8 @@ import { standards, divisions, subjects } from "@/defaults";
 import { Standards } from "./standard";
 import { Divisions } from "./division";
 import { Subjects } from "./subject";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
 export class Schools {
   static collectionName = "schools";
 
@@ -125,6 +127,20 @@ export class Schools {
       });
       retval=null
 
+      //login again as superadmin
+      const auth = getAuth()
+      
+      const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+      const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+
+      try {
+        const result = await signInWithEmailAndPassword(auth, adminEmail, adminPassword);
+
+        localStorage.setItem("userID", JSON.stringify(result?.user?.uid));
+      } catch (error) {
+        console.log(`Re-login error from addSchool: ${error.message}`);
+      }
+
       return true;
     } catch (error) {
       console.log("Error in addNewSchool:", error);
@@ -175,8 +191,58 @@ export class Schools {
 
   static deleteSchool = async (schoolID) => {
     try {
+      // delete standard
+      await this.deleteCollectionFromSchool(schoolID, "standards");
+
+      // delete division
+      await this.deleteCollectionFromSchool(schoolID, "divisions");
+
+      // delete subject
+      await this.deleteCollectionFromSchool(schoolID, "subjects");
+
+      // delete teachers
+      await this.deleteCollectionFromSchool(schoolID, "teachers");
+
+      // delete parents
+      await this.deleteCollectionFromSchool(schoolID, "parents");
+
+      // delete students
+      await this.deleteCollectionFromSchool(schoolID, "students");
+
+      // delete classTeacher
+      await this.deleteCollectionFromSchool(schoolID, "classTeacher");
+
+      // delete parentStudentLink
+      await this.deleteCollectionFromSchool(schoolID, "parentStudents");
+
+      // delete parentFCMToken
+      await this.deleteCollectionFromSchool(schoolID, "parentFCMToken");
+
+      // delete feestype
+      await this.deleteCollectionFromSchool(schoolID, "feesType");
+
+      // delete feesStructure
+      await this.deleteCollectionFromSchool(schoolID, "feesStructure");
+
+      // delete feesMapping
+      await this.deleteCollectionFromSchool(schoolID, "feesMapping");
+
+      // delete notifications
+      await this.deleteCollectionFromSchool(schoolID, "notifications");
+
+      // delete holidays
+      await this.deleteCollectionFromSchool(schoolID, "holiday");
+
+      // delete attendance
+      await this.deleteCollectionFromSchool(schoolID, "attendance");
+
+      // delete schoolSettings
+      await this.deleteCollectionFromSchool(schoolID, "schoolSettings")
+
+      // delete school
       await deleteDoc(doc(db, Schools.collectionName.toString(), schoolID));
-      // console.log(`School ${schoolId} deleted`);
+      console.log(`School ${schoolID} deleted successfully!`);
+
       return true;
     } catch (error) {
       console.log("Error in deleteSchool:", error);
@@ -242,6 +308,27 @@ export class Schools {
       }
     } catch (error) {
       console.log("Error in getSchool By ID:", error);
+    }
+  };
+
+  static deleteCollectionFromSchool = async (schoolID, collectionName) => {
+    try {
+      const queryRes = query(collection(db, collectionName), where("schoolID", "==", schoolID));
+      const querySnapshot = await getDocs(queryRes);
+      const size = querySnapshot.size
+
+      if (size > 0) {
+        querySnapshot.forEach(async (document) => {
+          await deleteDoc(doc(db, collectionName, document.id))
+        });
+        console.log(`Total ${size} records deleted from ${collectionName} of School ${schoolID}`);
+      } else {
+        console.log(`No records found in ${collectionName} for School ${schoolID}`);
+      }
+
+      return true;
+    } catch (error) {
+      console.log("Error in deleteCollectionFromSchool:", error);
     }
   };
 }
