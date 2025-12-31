@@ -12,6 +12,7 @@ import {
   validateDateBetween,
 } from "@/lib/utils";
 import { Holiday } from "@/firestore/documents/holiday";
+import Header from "@/app/components/ui/header";
 
 const Scanner = () => {
   const [scannedToken, setScannedToken] = useState("");
@@ -145,9 +146,9 @@ const Scanner = () => {
             studentID
           );
 
-          const studentExists = attendanceExists?.filter(
+          const studentExists = attendanceExists !== undefined ? attendanceExists?.filter(
             (attendance) => attendance?.attendanceDate === today
-          );
+          ) : [];
 
           if (studentExists && studentExists.length === 0) {
             const newAttendance = new Attendance(
@@ -163,7 +164,7 @@ const Scanner = () => {
               "NA",
               "NA"
             );
-            
+
             const retval = await newAttendance.addAttendance();
             const subheading = `Attendance marked for ${studentName}`;
             alert(`${subheading} on ${today} recorded with AttendanceID: ${retval}`);
@@ -224,20 +225,23 @@ const Scanner = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center p-6">
-      <h2 className="text-2xl font-bold mb-4">Scan QR Code</h2>
-      <div
-        id="qr-reader"
-        className="w-full max-w-md border border-gray-300 rounded-lg shadow-lg p-4"
-      ></div>
+    <div className="px-4 py-2 sm:px-6 lg:px-8">
+      <Header currentPage={"Scanner"}></Header>
+      <div className="min-h-screen flex flex-col items-center">
+        <h2 className="text-2xl font-bold mb-4">Scan QR Code</h2>
+        <div
+          id="qr-reader"
+          className="w-full max-w-md border border-gray-300 rounded-lg shadow-lg p-4"
+        ></div>
 
-      {scannedToken && (
-        <div className="mt-4 text-center">
-          <p className="text-lg font-semibold text-green-600">
-            ✅ Token: {scannedToken}
-          </p>
-        </div>
-      )}
+        {scannedToken && (
+          <div className="mt-4 text-center">
+            <p className="text-lg font-semibold text-green-600">
+              ✅ Token: {scannedToken}
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

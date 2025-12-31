@@ -8,15 +8,11 @@ import FeesListingTable from "../feesListingTable";
 const FeesList = ({ handleModalOpen }) => {
   const [storedAcademicYear, setStoredAcademicYear] = useState("");
   const [studentsFeesList, setStudentsFeesList] = useState(null);
-  // console.log(studentsFeesList, "studentsFeesList");
   const [loading, setLoading] = useState(true);
+  
   return (
-    <div>
-      <Header
-        // buttonText={"Add Student Fee"}
-        currentPage={"Fees"}
-        // handleModalOpen={() => handleModalOpen("Add")}
-      ></Header>
+    <>
+      <Header currentPage={"Fees"}></Header>
       <CustomSelectForm
         title={"Students Fees Table"}
         storedAcademicYear={storedAcademicYear}
@@ -26,7 +22,7 @@ const FeesList = ({ handleModalOpen }) => {
         setLoading={setLoading}
       ></CustomSelectForm>
       {!loading && <FeesListingTable studentsFeesList={studentsFeesList} />}
-    </div>
+    </>
   );
 };
 

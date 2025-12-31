@@ -6,7 +6,7 @@ import { defaultUrlDP } from "@/defaults";
 export class Teachers {
   static collectionName = "teachers";
 
-  constructor( teacherName, email, password, sceretQts, sceretAns, qualification, urlDP, cloudinaryImageId, createdDate, createdBy, updatedDate, updatedBy, schoolID = "new", teacherID = "new") {
+  constructor(teacherName, email, password, sceretQts, sceretAns, qualification, urlDP, cloudinaryImageId, createdDate, createdBy, updatedDate, updatedBy, schoolID = "new", teacherID = "new") {
     this.teacherName = teacherName;
     this.email = email;
     this.password = password;
@@ -40,7 +40,9 @@ export class Teachers {
         updatedDate: this.updatedDate,
         updatedBy: this.updatedBy,
       };
-      const docRef = await addDoc( collection(db, Teachers.collectionName.toString()), { ...newData }
+      const docRef = await addDoc(
+        collection(db, Teachers.collectionName.toString()),
+        { ...newData }
       );
       // console.log("Teachers added with ID:", docRef?.id);
       return true;

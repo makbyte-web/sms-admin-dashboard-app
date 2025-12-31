@@ -1,6 +1,5 @@
 "use client";
 import SchoolSingleProfile from "@/app/components/schoolSingleProfile";
-import Avatar from "@/public/images/avatar.jpg";
 import React, { useEffect, useState } from "react";
 
 const SingleSchoolProfile = () => {
@@ -20,7 +19,11 @@ const SingleSchoolProfile = () => {
     fetchSchool();
   }, []);
 
-  return <SchoolSingleProfile schoolData={schoolData} />;
+  return (
+    <div className="px-4 py-2 sm:px-6 lg:px-8">
+      <SchoolSingleProfile schoolData={schoolData} />
+    </div>
+  );
 };
 
 export default SingleSchoolProfile;

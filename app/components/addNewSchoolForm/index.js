@@ -4,6 +4,9 @@ import { useTheme } from "@/context/themeContext";
 import { Schools } from "@/firestore/documents/school";
 import { useUserContext } from "@/context/UserContext";
 import AddModal from "../ui/addModal";
+import { defaultUrlDP, defaultSchoolDP } from "@/defaults";
+import { deleteCloudinaryImage } from "@/actions/file";
+import Image from "next/image";
 
 export default function AddNewSchoolForm({ handleModalClose, fetchSchool }) {
   const schoolNameRef = useRef();
@@ -21,23 +24,46 @@ export default function AddNewSchoolForm({ handleModalClose, fetchSchool }) {
     isAddModalOpen,
     handleAddModalOpen,
     handleFileChange,
+    schoolID,
+    setSchoolID,
+    userType,
   } = useTheme();
 
   const { user } = useUserContext();
 
-  const defaultPhotoURL = user?.photoURL || ""
-  const defaultURLDP = isEditing?.urlDP || ""
- 
+  // defaultPhotoURL - admin profile pic
+  const defaultPhotoURL = (userType === "superadmin") ? defaultUrlDP : user?.photoURL || defaultUrlDP;
+
+  // defaultURLDP - school profile pic
+  const defaultURLDP = isEditing?.urlDP || defaultSchoolDP;
+
   const [urlDP, setUrlDP] = useState(defaultURLDP);
+  const [urlDPID, setUrlDPID] = useState(isEditing?.urlDPID || "");
   const [urlAdminDP, setUrlAdminDP] = useState(defaultPhotoURL);
+  const [urlAdminDPID, setUrlAdminDPID] = useState(isEditing?.urlAdminDPID || "");
+
+  // File state management for school image
+  const [selectedSchoolFile, setSelectedSchoolFile] = useState(null);
+  const [selectedAdminFile, setSelectedAdminFile] = useState(null);
+
+  // File state management for admin image
+  const [isUploadingSchool, setIsUploadingSchool] = useState(false);
+  const [isUploadingAdmin, setIsUploadingAdmin] = useState(false);
 
   let retval;
 
   const loggedInUserID = user?.uid ? user?.uid : "NA";
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const schoolID = JSON.parse(localStorage.getItem("schoolID")) || "NA";
+      setSchoolID(schoolID);
+    }
+  }, []);
+
   const handleFormSubmit = async () => {
-    const finalURLDP = urlDP !== undefined ? urlDP?.url : defaultURLDP;
-    const finalPhotoURL = urlAdminDP !== undefined ? urlAdminDP?.url : defaultPhotoURL;
+    const finalURLDP = urlDP?.url || urlDP;
+    const finalPhotoURL = urlAdminDP?.url || urlAdminDP;
 
     if (title === "Add") {
       const newSchool = new Schools(
@@ -47,6 +73,8 @@ export default function AddNewSchoolForm({ handleModalClose, fetchSchool }) {
         indexNoRef.current.value,
         emailRef.current.value,
         finalURLDP,
+        urlDPID,
+        urlAdminDPID,
         new Date().toLocaleDateString("en-IN"),
         loggedInUserID,
         "NA",
@@ -66,6 +94,8 @@ export default function AddNewSchoolForm({ handleModalClose, fetchSchool }) {
         indexNoRef.current.value,
         emailRef.current.value,
         finalURLDP,
+        urlDPID,
+        urlAdminDPID,
         isEditing.createdDate,
         isEditing.createdBy,
         new Date().toLocaleDateString("en-IN"),
@@ -73,9 +103,11 @@ export default function AddNewSchoolForm({ handleModalClose, fetchSchool }) {
         displayNameRef.current.value,
         finalPhotoURL,
         contactNoRef.current.value,
+        isEditing.isActive,
         isEditing.schoolID,
         isEditing.userID
       );
+
       retval = await existsingSchool.updateSchool();
     }
     handleModalClose();
@@ -266,56 +298,116 @@ export default function AddNewSchoolForm({ handleModalClose, fetchSchool }) {
                 </label>
               </div>
               <div className="mt-2">
-                <input
-                  id="displayName"
-                  name="displayName"
-                  type="text"
-                  placeholder="e.g School Administartor Name"
-                  defaultValue={
-                    isEditing?.displayName
-                      ? isEditing?.displayName
-                      : user?.displayName
-                  }
-                  ref={displayNameRef}
-                  className="block w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 px-4"
-                />
+                {title === "Edit" ? (
+                  <input
+                    id="displayName"
+                    name="displayName"
+                    type="text"
+                    placeholder="e.g School Administartor Name"
+                    defaultValue={user?.displayName}
+                    ref={displayNameRef}
+                    className="block w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 px-4"
+                  />
+                ) : (
+                  <input
+                    id="displayName"
+                    name="displayName"
+                    type="text"
+                    placeholder="e.g School Administartor Name"
+                    ref={displayNameRef}
+                    className="block w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 px-4"
+                  />
+                )}
               </div>
             </div>
 
             {/* Admin Profile Photo Field */}
-            {title === "Edit" ? (
-              <></>
-            ) : (
-              <div>
-                <div className="flex items-center justify-between">
-                  <label
-                    htmlFor="photoURL"
-                    className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100"
-                  >
-                    Administartor Profile URL
-                  </label>
-                </div>
-                <div className="mt-2">
-                  <input
-                    id="photo"
-                    name="administrator-photo"
-                    type="file"
-                    accept="image/*"
-                    onChange={async (e) =>
-                      setUrlAdminDP(
-                        await handleFileChange(
-                          e,
-                          "administrator-photo",
-                          `adm-${indexNoRef.current.value}-dp`,
-                          loggedInUserID
-                        )
-                      )
-                    }
-                    className="block w-full cursor-pointer rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 px-4 text-gray-900 dark:text-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500"
-                  />
-                </div>
+            <div>
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="photoURL"
+                  className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100"
+                >
+                  Administartor Profile URL
+                </label>
               </div>
-            )}
+              <div className="mt-2">
+                <input
+                  id="photo"
+                  name="administrator-photo"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    setSelectedAdminFile(file);
+                    setUrlAdminDP(URL.createObjectURL(file));
+                  }}
+                  className="block w-full cursor-pointer rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 px-4 text-gray-900 dark:text-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500"
+                />
+              </div>
+
+              {urlAdminDP && urlAdminDP?.url ? (
+                <Image
+                  src={urlAdminDP?.url}
+                  alt={"admin-profile-photo"}
+                  width={150}
+                  height={100}
+                  className="mt-2 rounded-md shadow"
+                />
+              ) : (
+                <Image
+                  src={urlAdminDP}
+                  alt={"admin-profile-photo"}
+                  width={150}
+                  height={100}
+                  className="mt-2 rounded-md shadow"
+                />
+              )}
+
+              {selectedAdminFile && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setIsUploadingAdmin(true);
+                    try {
+                      const { url, public_id } = await handleFileChange(
+                        { target: { files: [selectedAdminFile] } },
+                        "administrator-photo",
+                        `adm-${indexNoRef.current.value}-dp`,
+                        schoolID
+                      );
+
+                      if (url) {
+                        if (
+                          isEditing?.urlAdminDPID &&
+                          isEditing?.urlAdminDPID !== public_id &&
+                          user?.photoURL !== defaultUrlDP
+                        ) {
+                          await deleteCloudinaryImage(isEditing.urlAdminDPID);
+                        }
+
+                        setUrlAdminDP(url);
+                        setUrlAdminDPID(public_id);
+                        setSelectedAdminFile(null);
+                      }
+                    } finally {
+                      setIsUploadingAdmin(false);
+                    }
+                  }}
+                  className="mt-3 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-indigo-500"
+                >
+                  {isUploadingAdmin ? (
+                    <div className="flex flex-col items-center">
+                      <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full  animate-spin"></div>
+                      <span className="text-xs mt-1">Uploading...</span>
+                    </div>
+                  ) : (
+                    "Upload Photo"
+                  )}
+                </button>
+              )}
+            </div>
 
             {/* Upload School Photo Field */}
             <div>
@@ -326,32 +418,74 @@ export default function AddNewSchoolForm({ handleModalClose, fetchSchool }) {
                 Upload School Photo
               </label>
               <div className="mt-2">
-                {title === "Edit" ? (
-                  <>
-                    <img src={isEditing?.urlDP} width="150px" />
-                  </>
-                ) : (
-                  <input
-                    id="photo"
-                    name="school-photo"
-                    type="file"
-                    accept="image/*"
-                    onChange={async (e) =>
-                      setUrlDP(
-                        await handleFileChange(
-                          e,
-                          "school-photo",
-                          `sch-${indexNoRef.current.value}-dp`,
-                          loggedInUserID
-                        )
-                      )
-                    }
-                    // ref={imageRef}
-                    className="block w-full cursor-pointer rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 px-4 text-gray-900 dark:text-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500"
-                  />
-                )}
+                <input
+                  id="photo"
+                  name="school-photo"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    setSelectedSchoolFile(file);
+                    setUrlDP(URL.createObjectURL(file));
+                  }}
+                  className="block w-full cursor-pointer rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 px-4 text-gray-900 dark:text-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500"
+                />
               </div>
+
+              {urlDP && (
+                <Image
+                  src={urlDP}
+                  alt={"school-profile-photo"}
+                  width={250}
+                  height={150}
+                  className="mt-2 rounded-md shadow"
+                />
+              )}
             </div>
+
+            {selectedSchoolFile && (
+              <button
+                type="button"
+                onClick={async () => {
+                  setIsUploadingSchool(true);
+                  try {
+                    const { url, public_id } = await handleFileChange(
+                      { target: { files: [selectedSchoolFile] } },
+                      "school-photo",
+                      `sch-${indexNoRef.current.value}-dp`,
+                      schoolID
+                    );
+
+                    if (url) {
+                      if (
+                        isEditing?.urlDPID &&
+                        isEditing?.urlDPID !== public_id &&
+                        isEditing?.urlDP !== defaultSchoolDP
+                      ) {
+                        await deleteCloudinaryImage(isEditing.urlDPID);
+                      }
+
+                      setUrlDP(url);
+                      setUrlDPID(public_id);
+                      setSelectedSchoolFile(null);
+                    }
+                  } finally {
+                    setIsUploadingSchool(false);
+                  }
+                }}
+                className="mt-3 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-indigo-500"
+              >
+                {isUploadingSchool ? (
+                  <div className="flex flex-col items-center">
+                    <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full  animate-spin"></div>
+                    <span className="text-xs mt-1">Uploading...</span>
+                  </div>
+                ) : (
+                  "Upload Photo"
+                )}
+              </button>
+            )}
 
             <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
               <button

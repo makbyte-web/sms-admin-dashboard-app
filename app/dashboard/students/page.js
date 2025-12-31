@@ -2,22 +2,19 @@
 import List from "@/app/components/studentsList/index";
 import Modal from "@/app/components/ui/modal";
 import { useTheme } from "@/context/themeContext";
-import AddNewStudentForm from "@/app/components/addNewStudentForm";
 import { useState } from "react";
 import AddStudentFees from "@/app/components/addStudentFeesForm";
 
 const Students = ({ children }) => {
-  const { openModal, handleModalClose, handleModalOpen, title } = useTheme();
+  const { handleModalOpen } = useTheme();
   const [isStudentFeesOpen, setIsStudentFeesOpen] = useState(false);
+
   const handleStudentFeesOpen = () => {
     setIsStudentFeesOpen(true);
   };
 
   return (
-    <>
-      {/* <Modal open={openModal} handleModalClose={handleModalClose}>
-        <AddNewStudentForm handleModalClose={handleModalClose} title={title} />
-      </Modal> */}
+    <div className="px-4 py-2 sm:px-6 lg:px-8">
       <Modal
         open={isStudentFeesOpen}
         handleModalClose={() => setIsStudentFeesOpen(false)}
@@ -32,7 +29,7 @@ const Students = ({ children }) => {
       >
         {children}
       </List>
-    </>
+    </div>
   );
 };
 

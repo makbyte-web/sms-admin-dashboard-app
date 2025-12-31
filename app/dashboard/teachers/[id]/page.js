@@ -1,11 +1,10 @@
 "use client";
 import TeacherSingleProfile from "@/app/components/teacherSingleProfile";
-import Avatar from "@/public/images/avatar.jpg";
-
 import { useEffect, useState } from "react";
 
 export default function SingleTeacherProfile() {
   const [teacherData, setTeacherData] = useState(null);
+
   useEffect(() => {
     const result = JSON.parse(localStorage.getItem("teacher"));
     async function fetchTeachers() {
@@ -18,7 +17,10 @@ export default function SingleTeacherProfile() {
     }
     fetchTeachers();
   }, []);
+
   return (
-    <TeacherSingleProfile teacherData={teacherData}></TeacherSingleProfile>
+    <div className="px-4 py-2 sm:px-6 lg:px-8">
+      <TeacherSingleProfile teacherData={teacherData} />
+    </div>
   );
 }

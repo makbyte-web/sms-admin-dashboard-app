@@ -6,6 +6,7 @@ import { Parents } from "@/firestore/documents/parent";
 import { useUserContext } from "@/context/UserContext";
 import { defaultUrlDP } from "@/defaults";
 import { deleteCloudinaryImage } from "@/actions/file";
+import Image from "next/image";
 
 export default function AddNewParentForm({
   handleModalClose,
@@ -398,9 +399,11 @@ export default function AddNewParentForm({
                 />
 
                 {(urlDP || isEditing?.urlDP) && (
-                  <img
+                  <Image
                     src={urlDP ? urlDP : isEditing?.urlDP}
-                    width="150"
+                    alt={"parent-profile-photo"}
+                    width={150}
+                    height={100}
                     className="mt-2 rounded-md shadow"
                   />
                 )}

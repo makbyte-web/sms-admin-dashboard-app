@@ -11,7 +11,7 @@ export default function AcademicHolidayList() {
   const [holidayListData, setHolidayListData] = useState([]);
   const [selectedHolidayID, setSelectedHolidayID] = useState(null);
   const [academicYear, setAcademicYear] = useState("");
-  
+
   const {
     isDeleteModalOpen,
     handleCloseDeleteModal,
@@ -69,7 +69,7 @@ export default function AcademicHolidayList() {
     } else {
       result = "You are not authorized to view Schools Academic Holiday data";
     }
-    if (Array.isArray(result))  result?.sort((day1, day2) => day1?.occasion.localeCompare(day2?.occasion));
+    if (Array.isArray(result)) result?.sort((day1, day2) => day1?.occasion.localeCompare(day2?.occasion));
     if (result) setHolidayListData(result);
   };
   useEffect(() => {
@@ -77,18 +77,18 @@ export default function AcademicHolidayList() {
   }, [loggedInUserID, schoolID, userType, academicYear]);
 
   return (
-    <div className="mb-10">
-      <div className="max-sm:text-center mb-10">
+    <>
+      <div className="max-sm:text-center">
         <Link href={`/dashboard/schools/${schoolID}`}>
           <button
             type="button"
-            className="block rounded-xl bg-indigo-600 px-4 py-2 text-center text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
           >
             &larr; Back
           </button>
         </Link>
       </div>
-      <div className="flex justify-end w-full mb-10">
+      <div className="flex justify-end w-full mb-2">
         <button
           onClick={() => handleModalOpen("Add Academic Holiday")}
           type="button"
@@ -98,13 +98,13 @@ export default function AcademicHolidayList() {
         </button>
       </div>
       <div className="mt-8 flow-root">
-        <div className="text-center">
-          <span className="text-2xl font-medium leading-6 text-gray-900 dark:text-gray-200 ">
+        <div className="text-center mb-2">
+          <span className="text-2xl font-medium leading-6 text-gray-900 dark:text-gray-200">
             Academic Holiday
           </span>
         </div>
 
-        <div className="-mx-4 mt-2 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 px-8">
             <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
               <table className="min-w-full divide-y">
@@ -223,6 +223,6 @@ export default function AcademicHolidayList() {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
       />
-    </div>
+    </>
   );
 }

@@ -1,20 +1,14 @@
 "use client";
-import AddNewFeesForm from "@/app/components/addStudentFeesForm";
 import FeesList from "@/app/components/feesList";
-import Header from "@/app/components/ui/header";
-import Modal from "@/app/components/ui/modal";
 import { useTheme } from "@/context/themeContext";
 
 const Fees = ({ children }) => {
   const { openModal, handleModalClose, handleModalOpen } = useTheme();
 
   return (
-    <>
-      {/* <Modal open={openModal} handleModalClose={handleModalClose}>
-        <AddNewFeesForm handleModalClose={handleModalClose}></AddNewFeesForm>
-      </Modal> */}
+    <div className="px-4 py-2 sm:px-6 lg:px-8">
       <FeesList handleModalOpen={handleModalOpen}>{children}</FeesList>
-    </>
+    </div>
   );
 };
 

@@ -18,11 +18,7 @@ const Dashboard = () => {
   const { user } = useUserContext();
   const [schoolID, setSchoolID] = useState("");
   const [userType, setUserType] = useState("");
-  const [totals, setTotals] = useState({
-    students: null,
-    teachers: null,
-    schools: null,
-  });
+  const [totals, setTotals] = useState({ students: null, teachers: null, schools: null });
 
   const loggedInUserID = user?.uid ? user?.uid : "NA";
 
@@ -126,8 +122,8 @@ const Dashboard = () => {
   const userPlaceholder = displayName || email;
 
   return (
-    <div className="h-screen">
-      <Header buttonText={"New Admission"} userPlaceholder={userPlaceholder} />
+    <div className="h-screen px-4 py-2 sm:px-6 lg:px-8">
+      <Header userPlaceholder={userPlaceholder} />
       <div className="grid grid-cols-2 gap-10 max-md:grid-cols-1">
         {userType === "superadmin" ? (
           totals?.schools !== null ? (

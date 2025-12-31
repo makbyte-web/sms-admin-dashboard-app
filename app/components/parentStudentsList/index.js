@@ -144,8 +144,8 @@ const ParentStudentsList = ({ handleModalOpen }) => {
   };
 
   return (
-    <div className="mb-10">
-      <div className="max-sm:text-center mb-10">
+    <>
+      <div className="max-sm:text-center">
         <Link href={`/dashboard/schools/${schoolID}`}>
           <button
             type="button"
@@ -155,7 +155,7 @@ const ParentStudentsList = ({ handleModalOpen }) => {
           </button>
         </Link>
       </div>
-      <div className="flex justify-end w-full mb-10">
+      <div className="flex justify-end w-full mb-2">
         <button
           onClick={() => handleModalOpen("Add Parent Students Link", parentsId)}
           type="button"
@@ -165,13 +165,13 @@ const ParentStudentsList = ({ handleModalOpen }) => {
         </button>
       </div>
       <div className="mt-8 flow-root">
-        <div className="text-center">
+        <div className="text-center mb-2">
           <span className="text-2xl font-medium leading-6 text-gray-900 dark:text-gray-200">
             Parent Students Link List
           </span>
         </div>
 
-        <div className="-mx-4 mt-2 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 px-8">
             <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
               <table className="min-w-full divide-y">
@@ -274,7 +274,7 @@ const ParentStudentsList = ({ handleModalOpen }) => {
           onConfirm={handleConfirmDelete}
         />
       )}
-    </div>
+    </>
   );
 };
 

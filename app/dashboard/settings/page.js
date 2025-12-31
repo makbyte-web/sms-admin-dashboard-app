@@ -130,10 +130,7 @@ const Settings = () => {
         if (retval) alert(`SuperAdminSettings added with ID:${retval}`);
       }
       // set localStorage
-      localStorage.setItem(
-        "academicYear",
-        JSON.stringify(currAcademicYearRef.current.value)
-      );
+      localStorage.setItem("academicYear", JSON.stringify(currAcademicYearRef.current.value));
     } else {
       alert("Please Select Academic Year");
       return;
@@ -141,165 +138,10 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center p-6">
+    <div className="px-4 py-2 sm:px-6 lg:px-8">
       <Header currentPage={"Settings"}></Header>
-      {/* {userType === "superadmin" ? (
-        <>
-          <p>
-            Select and Save the Academic Year to view data of selected academic
-            year for any school.
-          </p>
-          <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm space-y-2">
-            <div>
-              <label
-                htmlFor="currentAcdemicYear"
-                className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100"
-              >
-                Current Academic Year
-              </label>
-              <div className="mt-2">
-                <select
-                  id="currentAcademicYear"
-                  name="currentAcademicYear"
-                  className="appearance-none block w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 ease-in-out hover:border-indigo-400 cursor-pointer"
-                  ref={currAcademicYearRef}
-                  required
-                >
-                  <option value="Select Academic Year">
-                    Select Academic Year
-                  </option>
-                  {exists === true
-                    ? academicYears &&
-                      academicYears?.map((item, idx) => (
-                        <option
-                          key={`academic-opt-${idx}`}
-                          value={item}
-                          selected={
-                            settings?.currentAcademicYear === item
-                              ? true
-                              : false
-                          }
-                        >
-                          {item}
-                        </option>
-                      ))
-                    : academicYears &&
-                      academicYears?.map((item, idx) => (
-                        <option key={`academic-opt-${idx}`} value={item}>
-                          {item}
-                        </option>
-                      ))}
-                </select>
-              </div>
-            </div>
-            <div>
-              <div className="mt-2">
-                <button
-                  onClick={(event) => handleAdminSave(event)}
-                  type="button"
-                  className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
-                >
-                  {exists ? "Edit" : "Add"}
-                </button>
-              </div>
-            </div>
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-sm space-y-2">
-            <div>
-              <label
-                htmlFor="schoolID"
-                className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100"
-              >
-                School ID
-              </label>
-              <div className="mt-2">
-                <input
-                  id="schoolID"
-                  name="schoolID"
-                  type="text"
-                  defaultValue={schoolID}
-                  className="block w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 px-4"
-                  disabled
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="schoolName"
-                className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100"
-              >
-                School Name
-              </label>
-              <div className="mt-2">
-                <input
-                  id="schoolName"
-                  name="schoolName"
-                  type="text"
-                  defaultValue={schoolName}
-                  className="block w-full rounded-md border border-gray-300 dark:border-gray-600 py-2 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6 px-4"
-                  disabled
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="currentAcdemicYear"
-                className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100"
-              >
-                Current Academic Year
-              </label>
-              <div className="mt-2">
-                <select
-                  id="currentAcademicYear"
-                  name="currentAcademicYear"
-                  className="appearance-none block w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 ease-in-out hover:border-indigo-400 cursor-pointer"
-                  ref={currAcademicYearRef}
-                  required
-                >
-                  <option value="Select Academic Year">
-                    Select Academic Year
-                  </option>
-                  {exists === true
-                    ? academicYears &&
-                      academicYears?.map((item, idx) => (
-                        <option
-                          key={`academic-opt-${idx}`}
-                          value={item}
-                          selected={
-                            settings?.currentAcademicYear === item
-                              ? true
-                              : false
-                          }
-                        >
-                          {item}
-                        </option>
-                      ))
-                    : academicYears &&
-                      academicYears?.map((item, idx) => (
-                        <option key={`academic-opt-${idx}`} value={item}>
-                          {item}
-                        </option>
-                      ))}
-                </select>
-              </div>
-            </div>
-            <div className="mt-2">
-              <button
-                onClick={(event) => handleSave(event)}
-                type="button"
-                className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
-              >
-                {exists ? "Edit" : "Save"}
-              </button>
-            </div>
-          </div>
-        </>
-      )} */}
       {userType === "superadmin" ? (
-        <>
+        <div className="min-h-screen flex flex-col items-center">
           <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
             <div className="flex items-start space-x-3">
               <svg
@@ -316,8 +158,7 @@ const Settings = () => {
                 />
               </svg>
               <p className="text-sm text-blue-800 dark:text-blue-200 font-medium">
-                Select and Save the Academic Year to view data of selected
-                academic year for any school.
+                Select and Save the Academic Year to view data of selected academic year for any school.
               </p>
             </div>
           </div>
@@ -344,19 +185,19 @@ const Settings = () => {
                   </option>
                   {exists === true
                     ? academicYears?.map((item, idx) => (
-                        <option
-                          key={`academic-opt-${idx}`}
-                          value={item}
-                          selected={settings?.currentAcademicYear === item}
-                        >
-                          {item}
-                        </option>
-                      ))
+                      <option
+                        key={`academic-opt-${idx}`}
+                        value={item}
+                        selected={settings?.currentAcademicYear === item}
+                      >
+                        {item}
+                      </option>
+                    ))
                     : academicYears?.map((item, idx) => (
-                        <option key={`academic-opt-${idx}`} value={item}>
-                          {item}
-                        </option>
-                      ))}
+                      <option key={`academic-opt-${idx}`} value={item}>
+                        {item}
+                      </option>
+                    ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                   <svg
@@ -403,143 +244,29 @@ const Settings = () => {
               </button>
             </div>
           </div>
-        </>
+        </div>
       ) : (
-        <>
-          <div className="mx-auto w-full max-w-md space-y-6">
-            {/* School ID Field */}
-            <div className="group">
-              <label
-                htmlFor="schoolID"
-                className="block text-sm font-semibold leading-6 text-gray-900 dark:text-gray-100 mb-2"
-              >
-                School ID
-              </label>
-              <div className="relative">
-                <input
-                  id="schoolID"
-                  name="schoolID"
-                  type="text"
-                  defaultValue={schoolID}
-                  className="block w-full rounded-lg border border-gray-300 dark:border-gray-600 py-3 px-4 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-700 shadow-sm focus:outline-none sm:text-sm cursor-not-allowed opacity-60"
-                  disabled
-                />
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <svg
-                    className="w-4 h-4 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            {/* School Name Field */}
-            <div className="group">
-              <label
-                htmlFor="schoolName"
-                className="block text-sm font-semibold leading-6 text-gray-900 dark:text-gray-100 mb-2"
-              >
-                School Name
-              </label>
-              <div className="relative">
-                <input
-                  id="schoolName"
-                  name="schoolName"
-                  type="text"
-                  defaultValue={schoolName}
-                  className="block w-full rounded-lg border border-gray-300 dark:border-gray-600 py-3 px-4 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-700 shadow-sm focus:outline-none sm:text-sm cursor-not-allowed opacity-60"
-                  disabled
-                />
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <svg
-                    className="w-4 h-4 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            {/* Academic Year Field */}
-            <div className="group">
-              <label
-                htmlFor="currentAcademicYear"
-                className="block text-sm font-semibold leading-6 text-gray-900 dark:text-gray-100 mb-2"
-              >
-                Current Academic Year
-                <span className="text-red-500 ml-1">*</span>
-              </label>
-              <div className="relative">
-                <select
-                  id="currentAcademicYear"
-                  name="currentAcademicYear"
-                  className="block w-full rounded-lg border border-gray-300 dark:border-gray-600 py-3 px-4 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm appearance-none cursor-pointer"
-                  ref={currAcademicYearRef}
-                  required
-                >
-                  <option value="Select Academic Year" disabled>
-                    Select Academic Year
-                  </option>
-                  {exists === true
-                    ? academicYears?.map((item, idx) => (
-                        <option
-                          key={`academic-opt-${idx}`}
-                          value={item}
-                          selected={settings?.currentAcademicYear === item}
-                        >
-                          {item}
-                        </option>
-                      ))
-                    : academicYears?.map((item, idx) => (
-                        <option key={`academic-opt-${idx}`} value={item}>
-                          {item}
-                        </option>
-                      ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <svg
-                    className="w-4 h-4 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <div className="pt-2">
-              <button
-                onClick={(event) => handleSave(event)}
-                type="button"
-                className="w-full inline-flex items-center justify-center rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
+        <div className="mx-auto w-full max-w-xl space-y-4">
+          {/* School ID Field */}
+          <div className="group">
+            <label
+              htmlFor="schoolID"
+              className="block text-sm font-semibold leading-6 text-gray-900 dark:text-gray-100 mb-2"
+            >
+              School ID
+            </label>
+            <div className="relative">
+              <input
+                id="schoolID"
+                name="schoolID"
+                type="text"
+                defaultValue={schoolID}
+                className="block w-full rounded-lg border border-gray-300 dark:border-gray-600 py-3 px-4 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-700 shadow-sm focus:outline-none sm:text-sm cursor-not-allowed opacity-60"
+                disabled
+              />
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <svg
-                  className="w-4 h-4 mr-2"
+                  className="w-4 h-4 text-gray-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -548,18 +275,130 @@ const Settings = () => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="2"
-                    d={
-                      exists
-                        ? "M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                        : "M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 0V4a2 2 0 00-6 0v3m-1 0h8m-8 0V4a2 2 0 016 0v3"
-                    }
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                   />
                 </svg>
-                {exists ? "Update Settings" : "Save Settings"}
-              </button>
+              </div>
             </div>
           </div>
-        </>
+
+          {/* School Name Field */}
+          <div className="group">
+            <label
+              htmlFor="schoolName"
+              className="block text-sm font-semibold leading-6 text-gray-900 dark:text-gray-100 mb-2"
+            >
+              School Name
+            </label>
+            <div className="relative">
+              <input
+                id="schoolName"
+                name="schoolName"
+                type="text"
+                defaultValue={schoolName}
+                className="block w-full rounded-lg border border-gray-300 dark:border-gray-600 py-3 px-4 text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-700 shadow-sm focus:outline-none sm:text-sm cursor-not-allowed opacity-60"
+                disabled
+              />
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg
+                  className="w-4 h-4 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Academic Year Field */}
+          <div className="group">
+            <label
+              htmlFor="currentAcademicYear"
+              className="block text-sm font-semibold leading-6 text-gray-900 dark:text-gray-100 mb-2"
+            >
+              Current Academic Year
+              <span className="text-red-500 ml-1">*</span>
+            </label>
+            <div className="relative">
+              <select
+                id="currentAcademicYear"
+                name="currentAcademicYear"
+                className="block w-full rounded-lg border border-gray-300 dark:border-gray-600 py-3 px-4 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm appearance-none cursor-pointer"
+                ref={currAcademicYearRef}
+                required
+              >
+                <option value="Select Academic Year" disabled>
+                  Select Academic Year
+                </option>
+                {exists === true
+                  ? academicYears?.map((item, idx) => (
+                    <option
+                      key={`academic-opt-${idx}`}
+                      value={item}
+                      selected={settings?.currentAcademicYear === item}
+                    >
+                      {item}
+                    </option>
+                  ))
+                  : academicYears?.map((item, idx) => (
+                    <option key={`academic-opt-${idx}`} value={item}>
+                      {item}
+                    </option>
+                  ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg
+                  className="w-4 h-4 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="pt-2">
+            <button
+              onClick={(event) => handleSave(event)}
+              type="button"
+              className="w-full inline-flex items-center justify-center rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d={
+                    exists
+                      ? "M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      : "M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 0V4a2 2 0 00-6 0v3m-1 0h8m-8 0V4a2 2 0 016 0v3"
+                  }
+                />
+              </svg>
+              {exists ? "Update Settings" : "Save Settings"}
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

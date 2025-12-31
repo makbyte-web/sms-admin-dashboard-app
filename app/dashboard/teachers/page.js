@@ -1,20 +1,14 @@
 "use client";
 import TeachersList from "@/app/components/teachersList";
-import { useTheme } from "@/context/themeContext";
-import Modal from "@/app/components/ui/modal";
-import React, { useState } from "react";
-import AddNewTeacherForm from "@/app/components/addNewTeacherForm";
+import React from "react";
+
 
 const Teachers = () => {
-  // const { openModal, handleModalClose, handleModalOpen, title } = useTheme();
 
   return (
-    <>
-      {/* <Modal open={openModal} handleModalClose={handleModalClose}>
-        <AddNewTeacherForm handleModalClose={handleModalClose} title={title} />
-      </Modal> */}
+    <div className="px-4 py-2 sm:px-6 lg:px-8">
       <TeachersList />
-    </>
+    </div>
   );
 };
 

@@ -3,39 +3,30 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import UploadCSV from "../../uploadFile";
 
-const Header = ({
-  noUpload,
-  buttonText,
-  currentPage,
-  handleModalOpen,
-  userPlaceholder,
-}) => {
+const Header = ({ noUpload, buttonText, currentPage, handleModalOpen, userPlaceholder }) => {
   const pathname = usePathname();
 
   return (
     <div className="flex flex-col gap-4 pb-6 pt-0 dark:bg-gray-800 rounded-md w-full">
       {/* Title Section */}
-      <div>
-        <h1 className="text-xl sm:text-2xl font-semibold leading-6 text-gray-900 dark:text-white">
-          {pathname === "/dashboard" ? (
-            <>
-              <span className="text-indigo-600 text-2xl sm:text-3xl">
-                Welcome,{" "}
-              </span>
-              {userPlaceholder}
-            </>
-          ) : (
-            currentPage
-          )}
-        </h1>
-      </div>
+      <h1 className="text-xl sm:text-2xl font-semibold leading-6 text-gray-900 dark:text-white">
+        {pathname === "/dashboard" ? (
+          <>
+            <span className="text-indigo-600 text-2xl sm:text-3xl">
+              Welcome,{" "}
+            </span>
+            {userPlaceholder}
+          </>
+        ) : (
+          currentPage
+        )}
+      </h1>
 
       {pathname !== "/dashboard" && (
         <div className="w-full">
-          {pathname !== "/dashboard/fees" &&
-            pathname !== "/dashboard/scanner" &&
-            pathname !== "/dashboard/notification" &&
-            pathname !== "/dashboard/settings" && <UploadCSV />}
+          {pathname !== "/dashboard/fees" && pathname !== "/dashboard/attendance" && pathname !== "/dashboard/scanner" &&
+            pathname !== "/dashboard/notification" && pathname !== "/dashboard/settings" && pathname !== "/dashboard/schools" &&
+            pathname !== "/dashboard/schools/configuration" && pathname !== "/dashboard/profile" && <UploadCSV />}
 
           {buttonText && (
             <button
