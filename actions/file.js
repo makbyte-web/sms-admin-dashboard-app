@@ -31,7 +31,7 @@ export const acceptFileToUpload = async (formData, name, id, folder) => {
     const file = formData.get(name);
 
     if (file instanceof File) {
-      const result = await uploadFiletoCloud(file, { asset_folder: `sms-admin-dashboard/${folder}`, public_id: `${id}` })
+      const result = await uploadFiletoCloud(file, { asset_folder: `sms-admin-dashboard-prod/${folder}`, public_id: `${id}` })
 
       // code to return URL
       if (result) return result
