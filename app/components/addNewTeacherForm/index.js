@@ -6,6 +6,7 @@ import { Teachers } from "@/firestore/documents/teacher";
 import { useUserContext } from "@/context/UserContext";
 import { defaultUrlDP } from "@/defaults";
 import { deleteCloudinaryImage } from "@/actions/file";
+import Image from "next/image";
 
 export default function AddNewTeacherForm({
   handleModalClose,
@@ -318,9 +319,11 @@ export default function AddNewTeacherForm({
                 />
 
                 {(urlDP || isEditing?.urlDP) && (
-                  <img
+                  <Image
                     src={urlDP ? urlDP : isEditing?.urlDP}
-                    width="150"
+                    alt={"teacher-profile-photo"}
+                    width={150}
+                    height={100}
                     className="mt-2 rounded-md shadow"
                   />
                 )}

@@ -53,7 +53,7 @@ export default function StudentList({
 
   const [deleteItems, setDeleteItems] = useState([]);
   const [isBulkDelete, setIsBulkDelete] = useState(false);
-  
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const loggedInUserID = JSON.parse(localStorage.getItem("userID")) || "NA";
@@ -95,19 +95,11 @@ export default function StudentList({
     fetchStudents();
   };
 
-  // const handleCloseDeleteModal = () => {
-  //   setIsDeleteModalOpen(false);
-  //   setDeleteItems([]);
-  // };
-
-  // const studentsFetchedRef = useRef(false);
-
   const fetchStudents = async () => {
     if (!schoolID || !userType) {
       console.warn("Skipping fetch: schoolID or userType is missing.");
       return;
     }
-    // console.log("Fetching students...");
     let studentsRes = [];
 
     if (userType === "superadmin") {
@@ -167,18 +159,16 @@ export default function StudentList({
   }, [setAlert, students?.length]);
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
-      <Header
-        buttonText={"Add Student"}
-        currentPage={"Students"}
-        handleModalOpen={() => handleModalOpen("Add")}
-      />
-      <FilteredSearch
-        placeholder="Search By Student Name or Gr. No."
-        onChange={(e) => handleSearchInput(e, "studentName", "grNo", students)}
-      />
-      <div className="mt-8 flow-root">
-        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+    <>
+      <Header buttonText={"Add Student"} currentPage={"Students"} handleModalOpen={() => handleModalOpen("Add")} />
+      <div className="-my-8">
+        <FilteredSearch
+          placeholder="Search By Student Name or Gr. No."
+          onChange={(e) => handleSearchInput(e, "studentName", "grNo", students)}
+        />
+      </div>
+      <div className="mt-4 flow-root">
+        <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
             <div className="relative">
               {selectedPeople.length > 0 && (
@@ -244,7 +234,7 @@ export default function StudentList({
                 {students?.length > 0 ? (
                   <tbody className="divide-y divide-gray-200 dark:divide-[--bg] bg-white dark:bg-[--bgSoft]">
                     {studentsFilteredData === null ||
-                    studentsFilteredData === undefined ? (
+                      studentsFilteredData === undefined ? (
                       <p>Loading...</p> // Show a loading message while fetching data
                     ) : Array.isArray(studentsFilteredData) &&
                       studentsFilteredData.length > 0 ? (
@@ -358,6 +348,6 @@ export default function StudentList({
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
       />
-    </div>
+    </>
   );
 }

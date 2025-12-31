@@ -9,6 +9,7 @@ import { Divisions } from "@/firestore/documents/division";
 import QRCode from "qrcode";
 import { defaultUrlDP } from "@/defaults";
 import { deleteCloudinaryImage } from "@/actions/file";
+import Image from "next/image";
 
 export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
   const {
@@ -429,9 +430,11 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
               />
 
               {(urlDP || isEditing?.urlDP) && (
-                <img
+                <Image
                   src={urlDP ? urlDP : isEditing?.urlDP}
-                  width="150"
+                  alt={"student-profile-photo"}
+                  width={150}
+                  height={100}
                   className="mt-2 rounded-md shadow"
                 />
               )}
@@ -494,7 +497,7 @@ export default function AddNewStudentForm({ handleModalClose, fetchStudents }) {
                 QR Code
               </label>
               <div className="mt-2">
-                <img src={isEditing?.urlQR} width="100px" />
+                <Image src={isEditing?.urlQR} width={100} height={100} alt={"student-QR-code"}/>
               </div>
             </div>
           ) : (

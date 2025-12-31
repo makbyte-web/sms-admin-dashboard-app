@@ -5,7 +5,7 @@ import { CompanyName } from "@/defaults";
 const Logo = ({ position }) => {
   return (
     <div
-      className={`flex w-full items-center ${
+      className={`flex w-full items-center cursor-default ${
         position ? position : "justify-center"
       }`}
     >
@@ -15,13 +15,7 @@ const Logo = ({ position }) => {
         width={40}
         height={40}
       />
-      <a
-        href="https://makbyte.io/"
-        target="blank"
-        className="dark:text-[--text] cursor-pointer font-semibold text-[--bg] text-lg ml-2"
-      >
-        {CompanyName}
-      </a>
+     {CompanyName}
     </div>
   );
 };

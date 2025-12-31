@@ -107,7 +107,7 @@ export const ThemeProvider = ({ children }) => {
 
     try {
       const res = await acceptFileToUpload(formData, name, id, folder);
-      console.log("File uploaded successfully!");
+      console.log("File uploaded successfully!");      
       return res;
     } catch (error) {
       console.error("Error uploading file:", error);

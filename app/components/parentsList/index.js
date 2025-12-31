@@ -1,7 +1,5 @@
 "use client";
-
 import { useState, useEffect } from "react";
-import { FaTrashAlt } from "react-icons/fa";
 import Link from "next/link";
 import Header from "../ui/header";
 import DeleteModal from "../ui/deleteModal";
@@ -31,9 +29,7 @@ const ParentList = () => {
     title,
   } = useTheme();
 
-  const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [selectedParents, setSelectedParents] = useState([]);
-  // const [parents, setParents] = useState([]);
   const [deleteItems, setDeleteItems] = useState([]);
   const [isBulkDelete, setIsBulkDelete] = useState(false);
   const [loggedInUserID, setLoggedInUserID] = useState("NA");
@@ -110,18 +106,16 @@ const ParentList = () => {
   if (isLoading) return <ProfileLoadingSkeleton />;
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
-      <Header
-        buttonText={"Add Parent"}
-        currentPage={"Parents"}
-        handleModalOpen={() => handleModalOpen("Add")}
-      />
-      <FilteredSearch
-        placeholder="Search By Parent Name or Contact"
-        onChange={(e) => handleSearchInput(e, "parentName", "contact", parents)}
-      />
-      <div className="mt-8 flow-root">
-        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+    <>
+      <Header buttonText={"Add Parent"} currentPage={"Parents"} handleModalOpen={() => handleModalOpen("Add")}/>
+      <div className="-my-8">
+        <FilteredSearch
+          placeholder="Search By Parent Name or Contact"
+          onChange={(e) => handleSearchInput(e, "parentName", "contact", parents)}
+        />
+      </div>
+      <div className="mt-4 flow-root">
+        <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
             <div className="relative">
               {selectedParents.length > 0 && (
@@ -191,7 +185,7 @@ const ParentList = () => {
                         />
                       </td>
                       <td className="whitespace-nowrap py-4 pr-3 text-sm font-medium dark:text-[--text]">
-                        <Link onClick={()=>{ localStorage.setItem("parent", JSON.stringify(parent)) }} href={`/dashboard/parents/${parent.parentID}`}>
+                        <Link onClick={() => { localStorage.setItem("parent", JSON.stringify(parent)) }} href={`/dashboard/parents/${parent.parentID}`}>
                           {parent.parentName}
                         </Link>
                       </td>
@@ -246,7 +240,7 @@ const ParentList = () => {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
       />
-    </div>
+    </>
   );
 };
 

@@ -65,22 +65,24 @@ export const academicYears = Object.freeze([
 ]);
 
 export const defaultUrlDP =
-  "https://res.cloudinary.com/duka3quea/image/upload/v1761906887/profilePlaceholderDP.jpg";
+  "https://res.cloudinary.com/duka3quea/image/upload/v1767034378/defaultUserProfile.png"
+
+export const defaultSchoolDP =
+  "https://res.cloudinary.com/duka3quea/image/upload/v1767033288/defaultSchoolProfile.png";
 
 export const sampleFileURL = Object.freeze({
   parents: [
-    "https://res.cloudinary.com/duka3quea/raw/upload/v1762067259/parents.xlsx",
-    "https://res.cloudinary.com/duka3quea/raw/upload/v1762067258/parents.csv",
+    "https://res.cloudinary.com/duka3quea/raw/upload/v1767034732/parents.xlsx",
+    "https://res.cloudinary.com/duka3quea/raw/upload/v1767034782/parents.csv"
   ],
   teachers: [
-    "https://res.cloudinary.com/duka3quea/raw/upload/v1762700936/teachers.xlsx",
-    "https://res.cloudinary.com/duka3quea/raw/upload/v1762700911/teachers.csv",
+    "https://res.cloudinary.com/duka3quea/raw/upload/v1767034694/teachers.xlsx",
+    "https://res.cloudinary.com/duka3quea/raw/upload/v1767034714/teachers.csv"
   ],
   students: [
-    "https://res.cloudinary.com/duka3quea/raw/upload/v1762067259/students.xlsx",
-    "https://res.cloudinary.com/duka3quea/raw/upload/v1762067258/students.csv",
+    "https://res.cloudinary.com/duka3quea/raw/upload/v1767034750/students.xlsx",
+    "https://res.cloudinary.com/duka3quea/raw/upload/v1767034762/students.csv"
   ],
-  schools: ["#", "#"],
 });
 
 export const subjects = Object.freeze([

@@ -24,6 +24,9 @@ export default function SingleParentProfile() {
     fetchParents();
   }, []);
 
-  return <ParentSingleProfile parentData={parentData} />;
-
+  return (
+    <div className="px-4 py-2 sm:px-6 lg:px-8">
+      <ParentSingleProfile parentData={parentData} />;
+    </div>
+  );
 }

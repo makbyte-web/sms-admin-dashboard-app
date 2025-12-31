@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Header from "../ui/header";
@@ -56,7 +55,6 @@ const TeacherList = () => {
 
     setIsLoading(true);
     try {
-      console.log("Fetching teachers for schoolID:", schoolID);
       const fetchedTeachers = await Teachers.getTeachersBySchool(schoolID);
       setTeachers(fetchedTeachers);
     } catch (error) {
@@ -116,20 +114,18 @@ const TeacherList = () => {
   if (isLoading) return <ProfileLoadingSkeleton />;
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
-      <Header
-        buttonText={"Add Teacher"}
-        currentPage={"Teachers"}
-        handleModalOpen={() => handleModalOpen("Add")}
-      />
-      <FilteredSearch
-        placeholder="Search By Teacher Name or Qualification"
-        onChange={(e) =>
-          handleSearchInput(e, "teacherName", "qualification", teachers)
-        }
-      />
-      <div className="mt-8 flow-root">
-        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+    <>
+      <Header buttonText={"Add Teacher"} currentPage={"Teachers"} handleModalOpen={() => handleModalOpen("Add")} />
+      <div className="-my-8">
+        <FilteredSearch
+          placeholder="Search By Teacher Name or Qualification"
+          onChange={(e) =>
+            handleSearchInput(e, "teacherName", "qualification", teachers)
+          }
+        />
+      </div>
+      <div className="mt-4 flow-root">
+        <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
             <div className="relative">
               {selectedTeachers?.length > 0 && (
@@ -295,7 +291,7 @@ const TeacherList = () => {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
       />
-    </div>
+    </>
   );
 };
 

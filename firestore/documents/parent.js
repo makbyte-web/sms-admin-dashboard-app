@@ -47,7 +47,10 @@ export class Parents {
         updatedBy: this.updatedBy
       };
 
-      await addDoc(collection(db, Parents.collectionName), newData);
+      await addDoc(
+        collection(db, Parents.collectionName),
+        newData
+      );
       return true;
     } catch (error) {
       console.log("Error in addParent:", error);

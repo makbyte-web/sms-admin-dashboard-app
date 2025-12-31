@@ -25,9 +25,9 @@ const StudentsTable = ({ students }) => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-          {students?.map((student) => (
+          {students?.map((student,idx) => (
             <tr
-              key={student.stdID}
+              key={`std-${idx}`}
               className="hover:bg-gray-50 dark:hover:bg-gray-800 transition"
             >
               <td className="px-4 py-3">

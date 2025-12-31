@@ -1,20 +1,15 @@
 "use client";
 import ParentsList from "@/app/components/parentsList";
 import { useTheme } from "@/context/themeContext";
-import Modal from "@/app/components/ui/modal";
-import React, { useState } from "react";
-import AddNewParentForm from "@/app/components/addNewParentForm";
+import React from "react";
 
 const Parents = () => {
-  const { openModal, handleModalClose, handleModalOpen, title } = useTheme();
+  const { handleModalOpen } = useTheme();
 
   return (
-    <>
-      {/* <Modal open={openModal} handleModalClose={handleModalClose}>
-        <AddNewParentForm handleModalClose={handleModalClose} title={title} />
-      </Modal> */}
+    <div className="px-4 py-2 sm:px-6 lg:px-8">
       <ParentsList handleModalOpen={handleModalOpen} />
-    </>
+    </div>
   );
 };
 

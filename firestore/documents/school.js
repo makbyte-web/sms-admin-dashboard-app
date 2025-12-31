@@ -10,13 +10,15 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 export class Schools {
   static collectionName = "schools";
 
-  constructor(schoolName, location, medium, indexNo, email, urlDP, createdDate, createdBy, updatedDate, updatedBy, displayName=null, photoURL=null, phoneNumber=null, schoolID='new', userID='new') {
+  constructor(schoolName, location, medium, indexNo, email, urlDP, urlDPID, urlAdminDPID, createdDate, createdBy, updatedDate, updatedBy, displayName = null, photoURL = null, phoneNumber = null, isActive = true, schoolID = 'new', userID = 'new') {
     this.schoolName = schoolName;
     this.location = location;
     this.medium = medium;
-    this.indexNo=indexNo
+    this.indexNo = indexNo
     this.email = email;
     this.urlDP = urlDP;
+    this.urlDPID = urlDPID;
+    this.urlAdminDPID = urlAdminDPID;
     this.createdDate = createdDate;
     this.createdBy = createdBy;
     this.updatedDate = updatedDate;
@@ -26,6 +28,7 @@ export class Schools {
     this.displayName = displayName;
     this.photoURL = photoURL;
     this.phoneNumber = phoneNumber
+    this.isActive = isActive
   }
 
   addSchool = async () => {
@@ -37,8 +40,11 @@ export class Schools {
         indexNo: this.indexNo,
         email: this.email,
         urlDP: this.urlDP,
+        urlDPID: this.urlDPID,
+        urlAdminDPID: this.urlAdminDPID,
         contactNo: this.phoneNumber,
-        userID : this.userID,  
+        userID: this.userID,
+        isActive: this.isActive,
         createdDate: this.createdDate,
         createdBy: this.createdBy,
         updatedDate: this.updatedDate,
@@ -47,7 +53,7 @@ export class Schools {
 
       const userData = {
         email: this.email,
-        schoolName: this.schoolName, 
+        schoolName: this.schoolName,
         displayName: this.displayName,
         photoURL: this.photoURL,
         phoneNumber: this.phoneNumber
@@ -86,7 +92,7 @@ export class Schools {
         // console.log(`Standard ${standards[standard]} added for school ${addedSchoolID}`)
         newDefaultStd = null;
       });
-      retval=null
+      retval = null
 
       //adding default division
       const divList = [];
@@ -108,7 +114,7 @@ export class Schools {
         // console.log(`Standard ${divisions[division]} add for school ${addedSchoolID}`)
         newDefaultDiv = null;
       });
-      retval=null
+      retval = null
 
       //adding default subjects
       let newDefaultSub;
@@ -125,11 +131,11 @@ export class Schools {
         // console.log(`Subject ${subject} added for school ${addedSchoolID}`)
         newDefaultSub = null;
       });
-      retval=null
+      retval = null
 
       //login again as superadmin
       const auth = getAuth()
-      
+
       const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
       const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
 
@@ -157,8 +163,11 @@ export class Schools {
         indexNo: this.indexNo,
         email: this.email,
         urlDP: this.urlDP,
+        urlDPID: this.urlDPID,
+        urlAdminDPID: this.urlAdminDPID,
         contactNo: this.phoneNumber,
-        userID : this.userID,
+        userID: this.userID,
+        isActive: this.isActive,
         createdDate: this.createdDate,
         createdBy: this.createdBy,
         updatedDate: this.updatedDate,
@@ -167,16 +176,18 @@ export class Schools {
 
       const userData = {
         email: this.email,
-        schoolName: this.schoolName, 
+        schoolName: this.schoolName,
         displayName: this.displayName,
         photoURL: this.photoURL,
         phoneNumber: this.phoneNumber
       }
 
-      // updateUser
-      const existsingUser = new Users(userData.email, userData.schoolName, userData.displayName, userData.photoURL, userData.phoneNumber)
-      const updatedUser = await existsingUser.updateUser()
-      // console.log(`User ${updatedUser} updated.`);
+      if (userData?.displayName !== "NA" && userData?.photoURL !== "NA") {
+        // updateUser
+        const existsingUser = new Users(userData?.email, userData?.schoolName, userData?.displayName, userData?.photoURL, userData?.phoneNumber)
+        const updatedUser = await existsingUser.updateUser()
+        // console.log(`User ${updatedUser} updated.`);
+      }
 
       // updateSchool
       const docRef = doc(db, Schools.collectionName.toString(), schoolID);
@@ -251,9 +262,7 @@ export class Schools {
 
   static getSchools = async () => {
     try {
-      const querySnapshot = await getDocs(
-        collection(db, Schools.collectionName.toString())
-      );
+      const querySnapshot = await getDocs(collection(db, Schools.collectionName.toString()));
       const data = [];
       querySnapshot.forEach((doc) => {
         data.push({ schoolID: doc.id, ...doc.data() });
@@ -299,7 +308,7 @@ export class Schools {
       const queryRes = query(collection(db, Schools.collectionName.toString()), where("userID", "==", userID));
       const querySnapshot = await getDocs(queryRes);
       querySnapshot.forEach((doc) => {
-       data.push({ schoolID: doc.id, ...doc.data()});
+        data.push({ schoolID: doc.id, ...doc.data() });
       });
       if (data.length) {
         return data && data[0]

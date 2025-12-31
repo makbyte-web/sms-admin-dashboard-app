@@ -32,7 +32,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 
 ## 
-[School Management System Admin Dashboard](https://sms-admin-dashboard-app.vercel.app)
+[MAK {Byte} SMS Dashboard](https://makbyte.co.in)
 
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

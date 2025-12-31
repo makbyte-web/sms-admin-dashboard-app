@@ -1,33 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-  TransitionChild,
-} from "@headlessui/react";
+import { Dialog, DialogBackdrop, DialogPanel, Menu, MenuButton, MenuItem, MenuItems, TransitionChild } from "@headlessui/react";
 import { MdQrCode2 } from "react-icons/md";
-import {
-  Bars3Icon,
-  BellIcon,
-  Cog6ToothIcon,
-  HomeIcon,
-  UsersIcon,
-  UserGroupIcon,
-  BuildingLibraryIcon,
-  XMarkIcon,
-  BellAlertIcon,
-  CurrencyRupeeIcon,
-} from "@heroicons/react/24/outline";
-import {
-  ChevronDownIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/20/solid";
+import { Bars3Icon, BellIcon, Cog6ToothIcon, HomeIcon, UsersIcon, UserGroupIcon, BuildingLibraryIcon, XMarkIcon, BellAlertIcon, CurrencyRupeeIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon, MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -119,11 +96,7 @@ const DashboardUi = ({ children }) => {
 
   const profileStatus = isSuperAdmin ? "Super Admin" : "School Admin";
 
-  const altPlaceholder = isSuperAdmin
-    ? CompanyName
-    : displayName
-    ? displayName
-    : email;
+  const altPlaceholder = isSuperAdmin ? CompanyName : displayName ? displayName : email;
   const srcPlaceholder = isSuperAdmin ? mkIcon : noProfilePhotoURL;
 
   useEffect(() => {
@@ -176,16 +149,9 @@ const DashboardUi = ({ children }) => {
                     <li>
                       <ul role="list" className="-mx-2 space-y-1">
                         {navigation?.map((item, index) => {
-                          {
-                            /* const hideItem =
-                            !isSuperAdmin && item.name === "Schools"; */
-                          }
                           return (
                             <li
                               key={item?.name}
-                              // style={{
-                              //   display: hideItem ? "none" : "block",
-                              // }}
                             >
                               <Link
                                 href={item?.href}
@@ -253,16 +219,9 @@ const DashboardUi = ({ children }) => {
                 <li>
                   <ul role="list" className="-mx-2 space-y-1">
                     {navigation.map((item, index) => {
-                      {
-                        /* const hideItem = !isSuperAdmin && item.name === "Schools"; */
-                      }
-
                       return (
                         <li
                           key={item?.name}
-                          // style={{
-                          //   display: hideItem ? "none" : "block",
-                          // }}
                         >
                           <Link
                             href={item.href}
@@ -296,7 +255,7 @@ const DashboardUi = ({ children }) => {
                     Settings
                   </Link>
                 </li>
-                <li className="dark:text-white text-[--bg] tracking-wide font-semibold">
+                <li className="dark:text-white text-[--bg] tracking-wide font-semibold cursor-default">
                   Powered by{" "}
                   <a
                     href="https://makbyte.io/"
@@ -367,25 +326,13 @@ const DashboardUi = ({ children }) => {
                 <Menu as="div" className="relative">
                   <MenuButton className="-m-1.5 flex items-center p-1.5">
                     <span className="sr-only">Open user menu</span>
-                    {photoURL ? (
-                      <>
-                        <img
-                          src={photoURL}
-                          alt={altPlaceholder}
-                          width={"32px"}
-                          height={"32px"}
-                          className="h-8 w-8 rounded-full bg-gray-50"
-                        />
-                      </>
-                    ) : (
-                      <>
-                        <Image
-                          alt={altPlaceholder}
-                          src={srcPlaceholder}
-                          className="h-8 w-8 rounded-full bg-gray-50"
-                        />
-                      </>
-                    )}
+                    <Image
+                      src={photoURL ? photoURL : srcPlaceholder}
+                      alt={altPlaceholder}
+                      width={32}
+                      height={32}
+                      className="h-8 w-8 rounded-full bg-gray-50"
+                    />
                     <span className="hidden lg:flex lg:items-center">
                       <span
                         aria-hidden="true"

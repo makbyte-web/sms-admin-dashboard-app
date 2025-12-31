@@ -59,7 +59,7 @@ const TeacherSingleProfile = ({ teacherData }) => {
           <div>
             <Image
               src={teacherData?.urlDP ? teacherData?.urlDP : NoAvatar}
-              alt="Teacher Avatar"
+              alt="teacher-profile-photo"
               className="rounded-xl"
               height={150}
               width={150}

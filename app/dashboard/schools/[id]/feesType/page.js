@@ -7,9 +7,9 @@ import React from "react";
 
 const FeesType = () => {
   return (
-    <>
+    <div className="px-4 py-2 sm:px-6 lg:px-8">
       <SchoolFeesTypeList />
-    </>
+    </div>
   );
 };
 

@@ -12,6 +12,7 @@ import Loader from "@/app/components/ui/loader";
 import AttendanceSkeletonLoader from "@/app/components/ui/attendanceSkeletonLoader";
 import { academicYears } from "@/defaults";
 import CustomSelectForm from "@/app/components/customSelectForm";
+import Header from "@/app/components/ui/header";
 
 const Attendace = () => {
   const { user } = useUserContext();
@@ -67,7 +68,12 @@ const Attendace = () => {
   const [loading, setLoading] = useState(true);
 
   return (
-    <>
+    <div className="px-4 py-2 sm:px-6 lg:px-8">
+      <Header
+        // buttonText={"Add Student Fee"}
+        currentPage={"Attendance"}
+      // handleModalOpen={() => handleModalOpen("Add")}
+      ></Header>
       <CustomSelectForm
         title={"Students Attendance"}
         storedAcademicYear={storedAcademicYear}
@@ -82,7 +88,7 @@ const Attendace = () => {
           holidayList={holidayList}
         />
       )}
-    </>
+    </div>
   );
 };
 

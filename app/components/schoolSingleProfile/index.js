@@ -17,7 +17,7 @@ const SchoolSingleProfile = ({ schoolData }) => {
     schoolID,
     setSchoolID,
   } = useTheme();
-  
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const userType = JSON.parse(localStorage.getItem("userType")) || "NA";
@@ -53,7 +53,7 @@ const SchoolSingleProfile = ({ schoolData }) => {
       label: "Division",
       route: `/dashboard/schools/${schoolID}/division`,
     },
-     {
+    {
       label: "Subject",
       route: `/dashboard/schools/${schoolID}/subject`,
     },
@@ -90,7 +90,7 @@ const SchoolSingleProfile = ({ schoolData }) => {
           <Link href={`/dashboard/schools`}>
             <button
               type="button"
-              className="block rounded-xl bg-indigo-600 px-4 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none"
+              className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
             >
               &larr; Back
             </button>
@@ -111,8 +111,8 @@ const SchoolSingleProfile = ({ schoolData }) => {
               src={schoolData?.urlDP ? schoolData?.urlDP : NoAvatar}
               alt={schoolData?.urlDP ? schoolData?.schoolName : "School"}
               className="rounded-xl"
+              width={250}
               height={150}
-              width={150}
             />
           </div>
         </div>
