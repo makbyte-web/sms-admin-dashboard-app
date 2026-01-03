@@ -9,7 +9,7 @@ const Header = ({ noUpload, buttonText, currentPage, handleModalOpen, userPlaceh
   return (
     <div className="flex flex-col gap-4 pb-6 pt-0 dark:bg-gray-800 rounded-md w-full">
       {/* Title Section */}
-      <h1 className="text-xl sm:text-2xl font-semibold leading-6 text-gray-900 dark:text-white">
+      <h1 className="text-xl sm:text-2xl font-semibold leading-6 text-gray-900 cursor-default dark:text-white">
         {pathname === "/dashboard" ? (
           <>
             <span className="text-indigo-600 text-2xl sm:text-3xl">

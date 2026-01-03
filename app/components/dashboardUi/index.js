@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogBackdrop, DialogPanel, Menu, MenuButton, MenuItem, MenuItems, TransitionChild } from "@headlessui/react";
 import { MdQrCode2 } from "react-icons/md";
@@ -17,6 +16,7 @@ import { useTheme } from "@/context/themeContext";
 import { GiTeacher } from "react-icons/gi";
 import { CompanyName } from "@/defaults";
 import { ChartPieIcon } from "lucide-react";
+import packageInfo from '@/package.json'
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: HomeIcon, current: true },
@@ -87,6 +87,7 @@ function classNames(...classes) {
 }
 
 const DashboardUi = ({ children }) => {
+  const { version } = packageInfo
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
 
@@ -186,12 +187,22 @@ const DashboardUi = ({ children }) => {
                         Settings
                       </Link>
                     </li>
-                    <li className="dark:text-[--text] text-[--bg] tracking-wide font-thin">
+                    {version ?
+                      <>
+                        <li className="dark:text-[--text] text-[--bg] text-sm font-semibold cursor-default">
+                          App Version:{" "}
+                          <span className="text-indigo-600 text-sm font-semibold">
+                            {version}
+                          </span>
+                        </li>
+                      </>
+                      : <></>}
+                    <li className="dark:text-[--text] text-[--bg] text-sm font-semibold">
                       Powered by{" "}
                       <a
                         href="https://makbyte.io/"
                         target="blank"
-                        className="text-indigo-600 cursor-pointer font-medium"
+                        className="text-indigo-600 cursor-pointer text-sm font-semibold"
                       >
                         {CompanyName}
                       </a>
@@ -255,12 +266,22 @@ const DashboardUi = ({ children }) => {
                     Settings
                   </Link>
                 </li>
-                <li className="dark:text-white text-[--bg] tracking-wide font-semibold cursor-default">
+                {version ?
+                  <>
+                    <li className="dark:text-white text-[--bg] tracking-wide text-sm font-semibold cursor-default">
+                      App Version: {" "}
+                      <span className="text-indigo-500 text-sm font-medium">
+                        {version}
+                      </span>
+                    </li>
+                  </>
+                  : <></>}
+                <li className="dark:text-white text-[--bg] tracking-wide text-sm font-semibold cursor-default">
                   Powered by{" "}
                   <a
                     href="https://makbyte.io/"
                     target="blank"
-                    className="text-indigo-600 cursor-pointer font-medium"
+                    className="text-indigo-500 cursor-pointer text-sm font-medium"
                   >
                     {CompanyName}
                   </a>
