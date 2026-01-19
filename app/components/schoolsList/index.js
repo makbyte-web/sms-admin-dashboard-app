@@ -34,7 +34,7 @@ const SchoolsList = () => {
     handleModalClose,
     title,
   } = useTheme();
-  
+
   const { user } = useUserContext();
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [selectedSchools, setSelectedSchools] = useState([]);
@@ -96,7 +96,11 @@ const SchoolsList = () => {
   return (
     <>
       {userType === "superadmin" ? (
-        <Header buttonText={"Add School"} currentPage={"Schools"} handleModalOpen={() => handleModalOpen("Add")} />
+        <Header
+          buttonText={"Add School"}
+          currentPage={"Schools"}
+          handleModalOpen={() => handleModalOpen("Add")}
+        />
       ) : (
         <Header currentPage={"Schools"} />
       )}
@@ -108,8 +112,11 @@ const SchoolsList = () => {
             onChange={(e) =>
               handleSearchInput(e, "schoolName", "location", schools)
             }
-          /></div>
-      ) : <></>}
+          />
+        </div>
+      ) : (
+        <></>
+      )}
 
       {userType === "superadmin" ? (
         <div className="flex justify-end items-center gap-x-2 mx-2 mt-10">
@@ -124,10 +131,7 @@ const SchoolsList = () => {
             href="/dashboard/schools/configuration"
             className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700"
           >
-            <Cog6ToothIcon
-              aria-hidden="true"
-              className="h-6 w-6 shrink-0"
-            />
+            <Cog6ToothIcon aria-hidden="true" className="h-6 w-6 shrink-0" />
             Configuration
           </Link>
         </div>
@@ -162,10 +166,15 @@ const SchoolsList = () => {
           schoolsFilteredData?.map((school, i) => (
             <li
               key={school?.schoolID}
-              className={`relative col-span-1 divide-y divide-gray-200 dark:divide-[--bgSoft] dark:bg-[--bg] bg-white overflow-hidden shadow-2xl dark:shadow-md rounded-xl transition-transform duration-300 ${selectedSchools.includes(school?.schoolID)
-                ? "scale-105 border-[1px] dark:border-white border-indigo-400"
-                : "scale-100"
-                }`}
+              className={`relative col-span-1  divide-y divide-gray-200 dark:divide-[--bgSoft] dark:bg-[--bg] bg-white overflow-hidden shadow-2xl dark:shadow-md rounded-xl transition-transform duration-300 ${
+                school.isActive
+                  ? null
+                  : "opacity-50 grayscale cursor-not-allowed bg-gray-200 dark:bg-gray-700 pointer-events-none"
+              } ${
+                selectedSchools.includes(school?.schoolID)
+                  ? "scale-105 border-[1px] dark:border-white border-indigo-400"
+                  : "scale-100"
+              }`}
             >
               {isDeleteMode && (
                 <input
@@ -185,8 +194,9 @@ const SchoolsList = () => {
                 }
               >
                 <div
-                  className={`flex w-full items-center justify-between space-x-6 p-6 ${isDeleteMode ? "pl-16" : ""
-                    }`}
+                  className={`flex w-full items-center justify-between space-x-6 p-6 ${
+                    isDeleteMode ? "pl-16" : ""
+                  }`}
                 >
                   <div className="flex-1 truncate">
                     <div className="flex items-center space-x-3">
@@ -221,7 +231,7 @@ const SchoolsList = () => {
                   <button
                     className="-ml-px flex w-0 flex-1 cursor-pointer"
                     onClick={() => {
-                      handleModalOpen("Edit", school?.schoolID && school)
+                      handleModalOpen("Edit", school?.schoolID && school);
                     }}
                   >
                     <span className="relative inline-flex w-0 bg-indigo-600 hover:bg-indigo-700 flex-1 items-center justify-center gap-x-3 border border-transparent py-4 text-sm font-semibold text-white">

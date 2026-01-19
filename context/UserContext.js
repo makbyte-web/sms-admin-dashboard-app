@@ -8,7 +8,7 @@ import {
 } from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
-
+import { Schools } from "@/firestore/documents/school";
 const UserContext = createContext();
 
 export const useUserContext = () => useContext(UserContext);
@@ -45,6 +45,25 @@ export const UserContextProvider = ({ children }) => {
   }, []);
 
   const login = async (inputEmail, inputPassword) => {
+    let result;
+
+    try {
+      result = await signInWithEmailAndPassword(
+        auth,
+        inputEmail,
+        inputPassword
+      );
+
+      const [school] = await Schools.getSchoolsOwnedByUser(result.user.uid);
+      if (!school.isActive) {
+        alert("Your school account is deactivated. Please contact support.");
+        await signOut(auth);
+        return;
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+
     const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
     const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
 
@@ -58,19 +77,7 @@ export const UserContextProvider = ({ children }) => {
       localStorage.setItem("userType", JSON.stringify("schooladmin"));
     }
 
-    try {
-      const result = await signInWithEmailAndPassword(
-        auth,
-        inputEmail,
-        inputPassword
-      );
-
-      localStorage.setItem("userID", JSON.stringify(result?.user?.uid));
-
-      return result;
-    } catch (error) {
-      console.log(error.message);
-    }
+    return result;
   };
 
   const logOut = async () => {
